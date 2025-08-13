@@ -1,4 +1,5 @@
 playwright==1.46.0
 pandas==2.2.2
 beautifulsoup4==4.12.3
-streamlit
+streamlit==1.48.0
+statsmodels==0.14.5

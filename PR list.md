@@ -21,7 +21,7 @@
 - Acceptance criteria:
   - If an image exists at `assets/olympic-club-logo.svg` (or .png/.jpg), it displays inline with the main header; otherwise, no errors and header renders as today.
 
-## PR 03 — Overview: histogram polish and clearer ECDF title [ ]
+## PR 03 — Overview: histogram polish and clearer ECDF title [x]
 
 - Rationale: Improve readability of overall scoring distributions.
 - Changes:
@@ -30,7 +30,7 @@
 - Acceptance criteria:
   - Histogram bars have visible outlines; ECDF title/caption clearly communicate interpretation; cut/leader overlays remain.
 
-## PR 04 — Course Analysis: clarify “Avg to‑Par by Course and Round” and add caption [ ]
+## PR 04 — Course Analysis: clarify “Avg to‑Par by Course and Round” and add caption [x]
 
 - Rationale: Chart is correct but needs explanation.
 - Changes:
@@ -38,7 +38,7 @@
 - Acceptance criteria:
   - Users understand what “to‑Par” means and how the aggregation is computed.
 
-## PR 05 — Course Analysis: remove overall hole difficulty heatmap [ ]
+## PR 05 — Course Analysis: remove overall hole difficulty heatmap [x]
 
 - Rationale: Redundant with Lake/Ocean tabs and adds visual repetition.
 - Changes:

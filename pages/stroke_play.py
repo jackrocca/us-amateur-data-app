@@ -70,7 +70,7 @@ NEUTRAL_COLOR = "#95a5a6"
 # Load data
 @st.cache_data
 def load_data():
-    base_path = Path("out")
+    base_path = Path("data")
     enhanced = pd.read_csv(base_path / "ENHANCED_DATA_PROD.csv")
     per_hole = pd.read_csv(base_path / "PER_HOLE_SCORES_PROD.csv")
     course_pars = pd.read_csv(base_path / "COURSE_PARS_PROD.csv")
@@ -325,22 +325,6 @@ with course_tab2:
     )
     st.plotly_chart(fig, use_container_width=True)
 
-    # Scoring distribution
-    col1, col2 = st.columns(2)
-    with col1:
-        st.subheader("Hardest Holes - Lake")
-        hardest = hole_stats_df.nlargest(5, "Avg vs Par")[
-            ["Hole", "Par", "Avg Score", "Avg vs Par"]
-        ]
-        st.dataframe(hardest, use_container_width=True)
-
-    with col2:
-        st.subheader("Easiest Holes - Lake")
-        easiest = hole_stats_df.nsmallest(5, "Avg vs Par")[
-            ["Hole", "Par", "Avg Score", "Avg vs Par"]
-        ]
-        st.dataframe(easiest, use_container_width=True)
-
     # Scoring rates by hole (stacked)
     st.subheader("Scoring Rates by Hole - Lake")
     rates = []
@@ -410,22 +394,6 @@ with course_tab3:
     )
     st.plotly_chart(fig, use_container_width=True)
 
-    # Scoring distribution
-    col1, col2 = st.columns(2)
-    with col1:
-        st.subheader("Hardest Holes - Ocean")
-        hardest = hole_stats_df.nlargest(5, "Avg vs Par")[
-            ["Hole", "Par", "Avg Score", "Avg vs Par"]
-        ]
-        st.dataframe(hardest, use_container_width=True)
-
-    with col2:
-        st.subheader("Easiest Holes - Ocean")
-        easiest = hole_stats_df.nsmallest(5, "Avg vs Par")[
-            ["Hole", "Par", "Avg Score", "Avg vs Par"]
-        ]
-        st.dataframe(easiest, use_container_width=True)
-
     # Scoring rates by hole (stacked)
     st.subheader("Scoring Rates by Hole - Ocean")
     rates = []
@@ -456,75 +424,175 @@ st.markdown('<h2 class="section-header">Player Analysis</h2>', unsafe_allow_html
 player_tab1, player_tab2, player_tab3 = st.tabs(["Entire Field", "Made the Cut", "Missed the Cut"])
 
 with player_tab1:
-    col1, col2, col3 = st.columns(3)
-
+    # Age distribution and scoring trends
+    st.subheader("Field Composition and Scoring Patterns")
+    
+    col1, col2 = st.columns(2)
+    
     with col1:
-        # Country distribution (ranked bar instead of pie)
-        country_counts = enhanced["CTRY"].value_counts().head(10).sort_values()
+        # Score distribution by percentile (more informative than country breakdown)
+        score_percentiles = enhanced["TOTAL_SCORE"].quantile([0.1, 0.25, 0.5, 0.75, 0.9]).round(1)
+        percentile_data = {
+            "Percentile": ["90th (Top 10%)", "75th (Top 25%)", "50th (Median)", "25th (Bottom 25%)", "10th (Bottom 10%)"],
+            "Score": [score_percentiles[0.9], score_percentiles[0.75], score_percentiles[0.5], score_percentiles[0.25], score_percentiles[0.1]],
+            "To Par": [score_percentiles[0.9] - 140, score_percentiles[0.75] - 140, score_percentiles[0.5] - 140, score_percentiles[0.25] - 140, score_percentiles[0.1] - 140]
+        }
+        percentile_df = pd.DataFrame(percentile_data)
+        
         fig = px.bar(
-            x=country_counts.values,
-            y=country_counts.index,
+            percentile_df,
+            x="To Par",
+            y="Percentile",
             orientation="h",
-            title="Top 10 Countries by Player Count",
-            labels={"x": "Players", "y": "Country"},
-            color_discrete_sequence=[NEUTRAL_COLOR],
+            title="Field Scoring Distribution by Percentile",
+            labels={"To Par": "Strokes to Par", "Percentile": "Field Percentile"},
+            color="To Par",
+            color_continuous_scale="RdYlGn_r",
         )
+        fig.update_layout(coloraxis_showscale=False)
         st.plotly_chart(fig, use_container_width=True)
 
     with col2:
-        # Round improvement (temporary gauge retained until PR 07)
-        improved = enhanced["IMPROVED_R2"].sum()
-        total_with_both = enhanced["IMPROVED_R2"].notna().sum()
-        fig = go.Figure(
-            go.Indicator(
-                mode="gauge+number+delta",
-                value=improved / total_with_both * 100,
-                title={"text": "Players Who Improved in R2"},
-                delta={"reference": 50},
-                gauge={
-                    "axis": {"range": [0, 100]},
-                    "bar": {"color": "darkblue"},
-                    "steps": [{"range": [0, 50], "color": "lightgray"}, {"range": [50, 100], "color": "gray"}],
-                    "threshold": {"line": {"color": "red", "width": 4}, "thickness": 0.75, "value": 50},
-                },
+        # Course performance comparison
+        ocean_better = enhanced[enhanced["COURSE_DIFFERENTIAL"] < 0]
+        lake_better = enhanced[enhanced["COURSE_DIFFERENTIAL"] > 0]
+        
+        col2a, col2b, col2c = st.columns(3)
+        
+        with col2a:
+            st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+            st.metric(
+                "Better on Ocean", 
+                len(ocean_better),
+                f"{len(ocean_better)/len(enhanced[enhanced['COURSE_DIFFERENTIAL'].notna()])*100:.1f}%"
             )
-        )
-        fig.update_layout(height=300)
-        st.plotly_chart(fig, use_container_width=True)
-
-    with col3:
-        # Consistency leaders
-        st.subheader("Most Consistent Players")
-        consistent = enhanced.nsmallest(5, "CONSISTENCY_SCORE")[
-            ["PLAYER", "ROUND_1_SCORE", "ROUND_2_SCORE", "CONSISTENCY_SCORE"]
-        ]
-        st.dataframe(consistent, use_container_width=True)
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        with col2b:
+            st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+            st.metric(
+                "Better on Lake", 
+                len(lake_better),
+                f"{len(lake_better)/len(enhanced[enhanced['COURSE_DIFFERENTIAL'].notna()])*100:.1f}%"
+            )
+            st.markdown('</div>', unsafe_allow_html=True)
+            
+        with col2c:
+            improved = enhanced["IMPROVED_R2"].sum()
+            total_with_both = enhanced["IMPROVED_R2"].notna().sum()
+            st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+            st.metric(
+                "Improved in R2", 
+                improved,
+                f"{improved/total_with_both*100:.1f}%"
+            )
+            st.markdown('</div>', unsafe_allow_html=True)
 
 with player_tab2:
     made_cut_df = enhanced[enhanced["MADE_CUT"]]
-
+    
+    # Cut Dynamics - Histogram with cut line overlay
+    st.subheader("Cut Distribution and Dynamics")
+    
     col1, col2 = st.columns(2)
-
+    
     with col1:
-        # Scoring average by position
-        fig = px.scatter(
-            made_cut_df,
-            x="POS_RANK",
-            y="SCORING_AVERAGE",
-            title="Scoring Average by Position (Made Cut)",
-            trendline="ols",
-            hover_data=["PLAYER", "TOTAL_SCORE"],
+        # Histogram of total scores colored by made cut status
+        fig = go.Figure()
+        
+        # Add histogram for missed cut players
+        missed_cut_scores = enhanced[~enhanced["MADE_CUT"]]["TOTAL_SCORE"]
+        fig.add_trace(go.Histogram(
+            x=missed_cut_scores,
+            nbinsx=25,
+            name="Missed Cut",
+            marker_color=MISSED_COLOR,
+            opacity=0.7,
+            bingroup=1
+        ))
+        
+        # Add histogram for made cut players
+        made_cut_scores = enhanced[enhanced["MADE_CUT"]]["TOTAL_SCORE"]
+        fig.add_trace(go.Histogram(
+            x=made_cut_scores,
+            nbinsx=25,
+            name="Made Cut", 
+            marker_color=MADE_COLOR,
+            opacity=0.7,
+            bingroup=1
+        ))
+        
+        # Add cut line
+        cut_line = enhanced[enhanced["MADE_CUT"]]["TOTAL_SCORE"].max()
+        fig.add_vline(
+            x=cut_line, 
+            line_dash="dash", 
+            line_color="black", 
+            line_width=2,
+            annotation_text=f"Cut Line: {cut_line}", 
+            annotation_position="top"
+        )
+        
+        fig.update_layout(
+            title="Score Distribution: Cut Dynamics",
+            xaxis_title="Total Score (36 holes)",
+            yaxis_title="Number of Players",
+            barmode="stack",
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
         )
         st.plotly_chart(fig, use_container_width=True)
-
+    
     with col2:
-        # Birdie makers
-        made_cut_df = made_cut_df.assign(TOTAL_BIRDIES=made_cut_df["R1_BIRDIES"] + made_cut_df["R2_BIRDIES"])
-        top_birdie_makers = made_cut_df.nlargest(10, "TOTAL_BIRDIES")[
-            ["PLAYER", "POS", "TOTAL_BIRDIES", "R1_BIRDIES", "R2_BIRDIES"]
-        ]
-        st.subheader("Top Birdie Makers (Made Cut)")
-        st.dataframe(top_birdie_makers, use_container_width=True)
+        # Within X shots of cut summary table
+        cut_margin_analysis = []
+        cut_line = enhanced[enhanced["MADE_CUT"]]["TOTAL_SCORE"].max()
+        
+        for margin in [1, 2, 3, 5]:
+            within_range = enhanced[
+                (enhanced["TOTAL_SCORE"] >= cut_line - margin) & 
+                (enhanced["TOTAL_SCORE"] <= cut_line + margin)
+            ]
+            made_in_range = within_range["MADE_CUT"].sum()
+            total_in_range = len(within_range)
+            missed_in_range = total_in_range - made_in_range
+            
+            cut_margin_analysis.append({
+                "Margin": f"±{margin}",
+                "Total Players": total_in_range,
+                "Made Cut": made_in_range,
+                "Missed Cut": missed_in_range,
+                "Cut Rate %": f"{(made_in_range/total_in_range*100):.1f}%" if total_in_range > 0 else "0%"
+            })
+        
+        cut_margin_df = pd.DataFrame(cut_margin_analysis)
+        
+        st.subheader("Near-Miss Analysis")
+        st.caption(f"Players within X shots of cut line ({cut_line})")
+        st.dataframe(cut_margin_df, use_container_width=True, hide_index=True)
+        
+        # Additional context
+        st.metric(
+            "Tightest Miss", 
+            f"+{enhanced[~enhanced['MADE_CUT']]['TOTAL_SCORE'].min() - cut_line}",
+            help="Closest missed cut score relative to cut line"
+        )
+
+    # Scoring average by position (kept as valuable insight)
+    st.subheader("Position vs Performance Analysis")
+    fig = px.scatter(
+        made_cut_df,
+        x="POS_RANK",
+        y="SCORING_AVERAGE", 
+        title="Scoring Average by Final Position (Made Cut)",
+        trendline="ols",
+        hover_data=["PLAYER", "TOTAL_SCORE"],
+        color_discrete_sequence=[LAKE_COLOR]
+    )
+    fig.update_layout(
+        xaxis_title="Final Position Rank",
+        yaxis_title="Scoring Average"
+    )
+    st.plotly_chart(fig, use_container_width=True)
 
     # Cut makers by starting nine
     st.subheader("Impact of Starting Nine (Round 2)")
