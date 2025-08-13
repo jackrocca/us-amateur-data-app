@@ -1146,181 +1146,322 @@ with player_tab4:
 
 # Advanced Analytics Section
 st.divider()
-st.markdown('<h2 class="section-header">Advanced Analytics</h2>', unsafe_allow_html=True)
+st.markdown('<h2 class="section-header">🔬 Advanced Analytics</h2>', unsafe_allow_html=True)
 
-score_range = st.slider(
-    "Total Score Range",
-    min_value=int(enhanced["TOTAL_SCORE"].min()),
-    max_value=int(enhanced["TOTAL_SCORE"].max()),
-    value=(int(enhanced["TOTAL_SCORE"].min()), int(enhanced["TOTAL_SCORE"].max())),
-    )
-
-# Apply filters
-filtered_df = enhanced.copy()
-filtered_df = filtered_df[(filtered_df["TOTAL_SCORE"] >= score_range[0]) & (filtered_df["TOTAL_SCORE"] <= score_range[1])]
-
-# Momentum analysis
-col1, col2 = st.columns(2)
-
-with col1:
-    # Round differential distribution
-    fig = px.histogram(
-        filtered_df,
-        x="ROUND_DIFFERENTIAL",
-        title="Round 2 vs Round 1 Score Differential",
-        nbins=20,
-        color_discrete_sequence=["#3498db"],
-    )
-    fig.add_vline(x=0, line_dash="dash", line_color="red", annotation_text="No Change")
-    fig.update_traces(marker_line_color="rgba(0,0,0,0.6)", marker_line_width=1)
-    st.plotly_chart(fig, use_container_width=True)
-    st.caption("Negative values indicate improvement in Round 2 (lower score is better).")
-
-with col2:
-    # Course differential for players who played both
-    both_courses = filtered_df[filtered_df["COURSE_DIFFERENTIAL"].notna()]
-    fig = px.scatter(
-        both_courses,
-        x="LAKE_SCORE",
-        y="OCEAN_SCORE",
-        title="Lake vs Ocean Performance",
-        hover_data=["PLAYER", "POS"],
-        trendline="ols",
-    )
-    fig.add_shape(type="line", x0=65, y0=65, x1=85, y1=85, line=dict(color="red", dash="dash"))
-    st.plotly_chart(fig, use_container_width=True)
-    st.caption("Diagonal line represents equal performance on both courses. Points below favor Ocean, above favor Lake.")
-
-# R1 vs R2 scatter
-st.subheader("Round 1 vs Round 2 Scores")
-
-# Calculate counts for legend labels by course sequence and cut status
-filtered_df_with_counts = filtered_df.copy()
-
-# Create a detailed label that includes course sequence and cut status counts
-def create_cut_label(row):
-    cut_status = row['MADE_CUT']
-    course_seq = row['COURSE_SEQUENCE']
+# Interactive Filters Section
+with st.container(border=True):
+    st.markdown('<h3 style="color: #1f4788; margin-top: 0px;">📊 Interactive Filters</h3>', unsafe_allow_html=True)
     
-    # Count for this specific combination
-    count = len(filtered_df[(filtered_df['MADE_CUT'] == cut_status) & (filtered_df['COURSE_SEQUENCE'] == course_seq)])
+    col_filter1, col_filter2 = st.columns([3, 1])
     
-    if cut_status:
-        return f'Made Cut - {course_seq} (n={count})'
-    else:
-        return f'Missed Cut - {course_seq} (n={count})'
-
-filtered_df_with_counts['MADE_CUT_LABEL'] = filtered_df_with_counts.apply(create_cut_label, axis=1)
-
-# Create color mapping for all possible label combinations
-unique_labels = filtered_df_with_counts['MADE_CUT_LABEL'].unique()
-color_map = {}
-for label in unique_labels:
-    if 'Made Cut' in label:
-        color_map[label] = MADE_COLOR
-    else:
-        color_map[label] = MISSED_COLOR
-
-fig = px.scatter(
-    filtered_df_with_counts,
-    x="ROUND_1_SCORE",
-    y="ROUND_2_SCORE",
-    color="MADE_CUT_LABEL",
-    symbol="COURSE_SEQUENCE",
-    color_discrete_map=color_map,
-    hover_data=["PLAYER", "POS"],
-)
-fig.add_shape(type="line", x0=60, y0=60, x1=85, y1=85, line=dict(color="red", dash="dash"))
-fig.update_layout(legend_title_text="Cut Status")
-st.plotly_chart(fig, use_container_width=True)
-st.caption("45-degree line represents consistent performance between rounds. Points below line show Round 2 improvement.")
-
-# Best nine analysis
-st.subheader("Best Nine-Hole Performances")
-
-# Convert best nine labels to course+side format
-def convert_to_course_side(row):
-    label = row['BEST_NINE_LABEL']
-    if pd.isna(label):
-        return None
+    with col_filter1:
+        score_range = st.slider(
+            "Total Score Range",
+            min_value=int(enhanced["TOTAL_SCORE"].min()),
+            max_value=int(enhanced["TOTAL_SCORE"].max()),
+            value=(int(enhanced["TOTAL_SCORE"].min()), int(enhanced["TOTAL_SCORE"].max())),
+            help="Filter players by their total score range to focus analysis"
+        )
     
-    # Map round/side to course/side based on the course sequence
-    if label == 'R1 Front':
-        course = row['ROUND_1_COURSE']
-        return f"{course} Front"
-    elif label == 'R1 Back':
-        course = row['ROUND_1_COURSE'] 
-        return f"{course} Back"
-    elif label == 'R2 Front':
-        course = row['ROUND_2_COURSE']
-        return f"{course} Front"
-    elif label == 'R2 Back':
-        course = row['ROUND_2_COURSE']
-        return f"{course} Back"
-    else:
-        return label
+    with col_filter2:
+        # Apply filters and show count
+        filtered_df = enhanced.copy()
+        filtered_df = filtered_df[(filtered_df["TOTAL_SCORE"] >= score_range[0]) & (filtered_df["TOTAL_SCORE"] <= score_range[1])]
+        st.metric("Filtered Players", len(filtered_df), f"{len(filtered_df)/len(enhanced)*100:.1f}% of field")
 
-filtered_df_nine = filtered_df.copy()
-filtered_df_nine['COURSE_SIDE_LABEL'] = filtered_df_nine.apply(convert_to_course_side, axis=1)
+# Performance Momentum Analysis
+with st.container(border=True):
+    st.markdown('<h3 style="color: #1f4788; margin-top: 0px;">📈 Performance Momentum & Course Comparison</h3>', unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown('<h4 style="color: #666; font-size: 1.1rem; margin-bottom: 15px;">Round-to-Round Momentum</h4>', unsafe_allow_html=True)
+        
+        # Enhanced round differential chart
+        fig = px.histogram(
+            filtered_df,
+            x="ROUND_DIFFERENTIAL",
+            title="R2 vs R1 Score Changes",
+            nbins=25,
+            color_discrete_sequence=[LAKE_COLOR],
+            labels={"ROUND_DIFFERENTIAL": "Score Change (R2 - R1)", "count": "Number of Players"}
+        )
+        fig.add_vline(x=0, line_dash="dash", line_color="red", annotation_text="No Change", annotation_position="top")
+        fig.update_traces(marker_line_color="rgba(0,0,0,0.6)", marker_line_width=1.2)
+        fig.update_layout(
+            title_font_size=14,
+            showlegend=False,
+            margin=dict(t=50, b=40, l=40, r=40)
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        st.markdown(
+            '<div class="caption">🔍 Negative values show R2 improvement (better scores). Most players struggled to maintain R1 form.</div>',
+            unsafe_allow_html=True
+        )
+    
+    with col2:
+        st.markdown('<h4 style="color: #666; font-size: 1.1rem; margin-bottom: 15px;">Cross-Course Performance</h4>', unsafe_allow_html=True)
+        
+        # Enhanced course comparison scatter
+        both_courses = filtered_df[filtered_df["COURSE_DIFFERENTIAL"].notna()]
+        fig = px.scatter(
+            both_courses,
+            x="LAKE_SCORE",
+            y="OCEAN_SCORE",
+            title="Lake vs Ocean Scoring",
+            hover_data=["PLAYER", "POS"],
+            trendline="ols",
+            color_discrete_sequence=[OCEAN_COLOR],
+            labels={"LAKE_SCORE": "Lake Course Score", "OCEAN_SCORE": "Ocean Course Score"}
+        )
+        fig.add_shape(type="line", x0=65, y0=65, x1=85, y1=85, line=dict(color="red", dash="dash", width=2))
+        fig.update_layout(
+            title_font_size=14,
+            showlegend=False,
+            margin=dict(t=50, b=40, l=40, r=40)
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        st.markdown(
+            '<div class="caption">🔍 Diagonal line shows equal performance. Points below favor Ocean; above favor Lake.</div>',
+            unsafe_allow_html=True
+        )
 
-best_nine_dist = filtered_df_nine['COURSE_SIDE_LABEL'].value_counts()
-
-# Ensure we have exactly 4 categories in the expected order
-expected_categories = ["Lake Front", "Lake Back", "Ocean Front", "Ocean Back"]
-category_counts = []
-for cat in expected_categories:
-    count = best_nine_dist.get(cat, 0)
-    category_counts.append(count)
-
-fig = go.Figure(
-    data=[go.Bar(
-        x=expected_categories, 
-        y=category_counts, 
-        marker_color=[LAKE_COLOR, LAKE_COLOR, OCEAN_COLOR, OCEAN_COLOR],
-        text=category_counts,
-        textposition='auto'
-    )]
-)
-fig.update_layout(
-    title="Distribution of Best Nine-Hole Scores by Course+Side", 
-    xaxis_title="Course and Side", 
-    yaxis_title="Number of Players"
-)
-st.plotly_chart(fig, use_container_width=True)
-st.caption("Shows where players recorded their best nine-hole score during the championship.")
-
-# Statistical summary
-st.subheader("Statistical Summary")
-summary_stats = filtered_df[["TOTAL_SCORE", "ROUND_1_SCORE", "ROUND_2_SCORE", "LAKE_SCORE", "OCEAN_SCORE"]].describe()
-st.dataframe(summary_stats.round(2), use_container_width=True)
-st.caption("Descriptive statistics for scoring across all filtered players.")
-
-
-
-# Hardest three-hole stretches
-st.subheader("Hardest Three-Hole Stretches")
-
-def hardest_stretches(course_name: str) -> pd.DataFrame:
-    df = per_hole[per_hole["COURSE"] == course_name]
-    pars = course_pars[course_pars["COURSE"] == course_name].set_index("HOLE")["PAR"].to_dict()
-    avg_vs = []
-    for hole in range(1, 19):
-        hole_scores = df[f"HOLE_{hole}"].dropna()
-        if len(hole_scores) == 0:
-            avg = np.nan
+# Round Performance Analysis
+with st.container(border=True):
+    st.markdown('<h3 style="color: #1f4788; margin-top: 0px;">⚖️ Round-by-Round Performance Patterns</h3>', unsafe_allow_html=True)
+    
+    # Enhanced R1 vs R2 scatter with better labeling
+    filtered_df_with_counts = filtered_df.copy()
+    
+    def create_cut_label(row):
+        cut_status = row['MADE_CUT']
+        course_seq = row['COURSE_SEQUENCE']
+        count = len(filtered_df[(filtered_df['MADE_CUT'] == cut_status) & (filtered_df['COURSE_SEQUENCE'] == course_seq)])
+        
+        if cut_status:
+            return f'Made Cut - {course_seq} (n={count})'
         else:
-            avg = hole_scores.mean() - pars[hole]
-        avg_vs.append(avg)
-    stretches = []
-    for start in range(1, 17):
-        window = [avg_vs[start - 1], avg_vs[start], avg_vs[start + 1]]
-        if any(pd.isna(window)):
-            continue
-        stretches.append({"Course": course_name, "Stretch": f"{start}-{start+2}", "Avg vs Par": float(np.sum(window))})
-    return pd.DataFrame(stretches).nlargest(3, "Avg vs Par")
+            return f'Missed Cut - {course_seq} (n={count})'
+    
+    filtered_df_with_counts['MADE_CUT_LABEL'] = filtered_df_with_counts.apply(create_cut_label, axis=1)
+    
+    # Enhanced color mapping
+    unique_labels = filtered_df_with_counts['MADE_CUT_LABEL'].unique()
+    color_map = {}
+    for label in unique_labels:
+        if 'Made Cut' in label:
+            color_map[label] = MADE_COLOR
+        else:
+            color_map[label] = MISSED_COLOR
+    
+    fig = px.scatter(
+        filtered_df_with_counts,
+        x="ROUND_1_SCORE",
+        y="ROUND_2_SCORE",
+        color="MADE_CUT_LABEL",
+        symbol="COURSE_SEQUENCE",
+        color_discrete_map=color_map,
+        hover_data=["PLAYER", "POS"],
+        title="Round 1 vs Round 2 Performance by Cut Status",
+        labels={"ROUND_1_SCORE": "Round 1 Score", "ROUND_2_SCORE": "Round 2 Score"}
+    )
+    fig.add_shape(type="line", x0=60, y0=60, x1=85, y1=85, line=dict(color="red", dash="dash", width=2))
+    fig.update_layout(
+        legend_title_text="Performance Group",
+        title_font_size=16,
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5),
+        margin=dict(t=80, b=40, l=40, r=40)
+    )
+    st.plotly_chart(fig, use_container_width=True)
+    st.markdown(
+        '<div class="caption">🔍 Diagonal line shows consistent performance. Points below improved in R2; course sequence affects patterns.</div>',
+        unsafe_allow_html=True
+    )
 
-stretches_df = pd.concat([hardest_stretches("Lake"), hardest_stretches("Ocean")])
-st.dataframe(stretches_df.reset_index(drop=True), use_container_width=True)
-st.caption("Most challenging consecutive three-hole sequences based on average score vs par.")
+# Peak Performance Analysis
+with st.container(border=True):
+    st.markdown('<h3 style="color: #1f4788; margin-top: 0px;">🏆 Peak Performance Zones</h3>', unsafe_allow_html=True)
+    
+    col_nine1, col_nine2 = st.columns([2, 1])
+    
+    with col_nine1:
+        st.markdown('<h4 style="color: #666; font-size: 1.1rem; margin-bottom: 15px;">Best Nine-Hole Distribution</h4>', unsafe_allow_html=True)
+        
+        # Enhanced best nine analysis with better formatting
+        def convert_to_course_side(row):
+            label = row['BEST_NINE_LABEL']
+            if pd.isna(label):
+                return None
+            
+            if label == 'R1 Front':
+                return f"{row['ROUND_1_COURSE']} Front"
+            elif label == 'R1 Back':
+                return f"{row['ROUND_1_COURSE']} Back"
+            elif label == 'R2 Front':
+                return f"{row['ROUND_2_COURSE']} Front"
+            elif label == 'R2 Back':
+                return f"{row['ROUND_2_COURSE']} Back"
+            else:
+                return label
+        
+        filtered_df_nine = filtered_df.copy()
+        filtered_df_nine['COURSE_SIDE_LABEL'] = filtered_df_nine.apply(convert_to_course_side, axis=1)
+        best_nine_dist = filtered_df_nine['COURSE_SIDE_LABEL'].value_counts()
+        
+        expected_categories = ["Lake Front", "Lake Back", "Ocean Front", "Ocean Back"]
+        category_counts = [best_nine_dist.get(cat, 0) for cat in expected_categories]
+        
+        fig = go.Figure(
+            data=[go.Bar(
+                x=expected_categories, 
+                y=category_counts, 
+                marker_color=[LAKE_COLOR, LAKE_COLOR, OCEAN_COLOR, OCEAN_COLOR],
+                text=category_counts,
+                textposition='auto',
+                textfont_size=12
+            )]
+        )
+        fig.update_layout(
+            title="Best Nine-Hole Performances by Course Section", 
+            xaxis_title="Course Section", 
+            yaxis_title="Players Count",
+            title_font_size=14,
+            showlegend=False,
+            margin=dict(t=50, b=40, l=40, r=40)
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with col_nine2:
+        st.markdown('<h4 style="color: #666; font-size: 1.1rem; margin-bottom: 15px;">Performance Insights</h4>', unsafe_allow_html=True)
+        
+        # Calculate percentages for insights
+        total_players = sum(category_counts)
+        if total_players > 0:
+            lake_front_pct = (category_counts[0] / total_players) * 100
+            ocean_front_pct = (category_counts[2] / total_players) * 100
+            
+            st.metric("Lake Front Leaders", f"{category_counts[0]}", f"{lake_front_pct:.1f}% of players")
+            st.metric("Ocean Front Leaders", f"{category_counts[2]}", f"{ocean_front_pct:.1f}% of players")
+            
+            # Most challenging insight
+            min_idx = category_counts.index(min(category_counts))
+            hardest_section = expected_categories[min_idx]
+            st.metric("Least Peak Performances", hardest_section, f"{category_counts[min_idx]} players")
+    
+    st.markdown(
+        '<div class="caption">🔍 Shows where players achieved their lowest nine-hole score, revealing course section preferences and conditions.</div>',
+        unsafe_allow_html=True
+    )
+
+# Statistical Deep Dive
+with st.container(border=True):
+    st.markdown('<h3 style="color: #1f4788; margin-top: 0px;">📋 Statistical Summary & Difficulty Analysis</h3>', unsafe_allow_html=True)
+    
+    col_stats1, col_stats2 = st.columns([2, 1])
+    
+    with col_stats1:
+        st.markdown('<h4 style="color: #666; font-size: 1.1rem; margin-bottom: 15px;">Scoring Statistics</h4>', unsafe_allow_html=True)
+        
+        # Enhanced statistical summary with better formatting
+        summary_stats = filtered_df[["TOTAL_SCORE", "ROUND_1_SCORE", "ROUND_2_SCORE", "LAKE_SCORE", "OCEAN_SCORE"]].describe()
+        summary_stats.columns = ["Total Score", "Round 1", "Round 2", "Lake Course", "Ocean Course"]
+        
+        # Format the dataframe for better readability
+        formatted_stats = summary_stats.round(2)
+        st.dataframe(
+            formatted_stats, 
+            use_container_width=True,
+            column_config={
+                "Total Score": st.column_config.NumberColumn("Total Score", format="%.1f"),
+                "Round 1": st.column_config.NumberColumn("Round 1", format="%.1f"),
+                "Round 2": st.column_config.NumberColumn("Round 2", format="%.1f"),
+                "Lake Course": st.column_config.NumberColumn("Lake Course", format="%.1f"),
+                "Ocean Course": st.column_config.NumberColumn("Ocean Course", format="%.1f")
+            }
+        )
+        
+        st.markdown(
+            '<div class="caption">📊 Comprehensive statistical breakdown of scoring performance across all metrics for filtered players.</div>',
+            unsafe_allow_html=True
+        )
+    
+    with col_stats2:
+        st.markdown('<h4 style="color: #666; font-size: 1.1rem; margin-bottom: 15px;">Course Difficulty Analysis</h4>', unsafe_allow_html=True)
+        
+        # Enhanced course difficulty metrics
+        if len(filtered_df) > 0:
+            lake_avg = filtered_df["LAKE_SCORE"].mean()
+            ocean_avg = filtered_df["OCEAN_SCORE"].mean()
+            difficulty_diff = lake_avg - ocean_avg
+            
+            st.metric(
+                "Lake Avg Score", 
+                f"{lake_avg:.2f}",
+                f"{lake_avg - 70:+.2f} vs par",
+                delta_color="inverse"
+            )
+            
+            st.metric(
+                "Ocean Avg Score", 
+                f"{ocean_avg:.2f}",
+                f"{ocean_avg - 70:+.2f} vs par", 
+                delta_color="inverse"
+            )
+            
+            st.metric(
+                "Course Difficulty Gap",
+                f"{abs(difficulty_diff):.2f}",
+                f"Lake {'harder' if difficulty_diff > 0 else 'easier'}",
+                delta_color="off"
+            )
+
+# Hardest Stretches Analysis  
+with st.container(border=True):
+    st.markdown('<h3 style="color: #1f4788; margin-top: 0px;">⛳ Most Challenging Hole Sequences</h3>', unsafe_allow_html=True)
+    
+    def hardest_stretches(course_name: str) -> pd.DataFrame:
+        df = per_hole[per_hole["COURSE"] == course_name]
+        pars = course_pars[course_pars["COURSE"] == course_name].set_index("HOLE")["PAR"].to_dict()
+        avg_vs = []
+        for hole in range(1, 19):
+            hole_scores = df[f"HOLE_{hole}"].dropna()
+            if len(hole_scores) == 0:
+                avg = np.nan
+            else:
+                avg = hole_scores.mean() - pars[hole]
+            avg_vs.append(avg)
+        stretches = []
+        for start in range(1, 17):
+            window = [avg_vs[start - 1], avg_vs[start], avg_vs[start + 1]]
+            if any(pd.isna(window)):
+                continue
+            stretches.append({
+                "Course": course_name, 
+                "Stretch": f"Holes {start}-{start+2}", 
+                "Avg vs Par": float(np.sum(window)),
+                "Difficulty": "🔥 Brutal" if np.sum(window) > 2.0 else "⚠️ Tough" if np.sum(window) > 1.0 else "😐 Moderate"
+            })
+        return pd.DataFrame(stretches).nlargest(3, "Avg vs Par")
+    
+    stretches_df = pd.concat([hardest_stretches("Lake"), hardest_stretches("Ocean")])
+    stretches_df = stretches_df.reset_index(drop=True)
+    
+    st.dataframe(
+        stretches_df, 
+        use_container_width=True,
+        hide_index=True,
+        column_config={
+            "Course": st.column_config.TextColumn("Course", width="small"),
+            "Stretch": st.column_config.TextColumn("Hole Stretch", width="medium"), 
+            "Avg vs Par": st.column_config.NumberColumn("Avg vs Par", format="%.3f"),
+            "Difficulty": st.column_config.TextColumn("Difficulty Rating", width="medium")
+        }
+    )
+    
+    st.markdown(
+        '<div class="caption">⛳ Most punishing consecutive three-hole sequences based on scoring difficulty relative to par. Higher values indicate greater challenge.</div>',
+        unsafe_allow_html=True
+    )
 
 
