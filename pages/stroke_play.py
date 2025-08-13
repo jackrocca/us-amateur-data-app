@@ -1146,11 +1146,11 @@ with player_tab4:
 
 # Advanced Analytics Section
 st.divider()
-st.markdown('<h2 class="section-header">🔬 Advanced Analytics</h2>', unsafe_allow_html=True)
+st.markdown('<h2 class="section-header">Advanced Analytics</h2>', unsafe_allow_html=True)
 
 # Interactive Filters Section
 with st.container(border=True):
-    st.markdown('<h3 style="color: #1f4788; margin-top: 0px;">📊 Interactive Filters</h3>', unsafe_allow_html=True)
+    st.markdown('<h3 style="color: #1f4788; margin-top: 0px;">Interactive Filters</h3>', unsafe_allow_html=True)
     
     col_filter1, col_filter2 = st.columns([3, 1])
     
@@ -1171,7 +1171,7 @@ with st.container(border=True):
 
 # Performance Momentum Analysis
 with st.container(border=True):
-    st.markdown('<h3 style="color: #1f4788; margin-top: 0px;">📈 Performance Momentum & Course Comparison</h3>', unsafe_allow_html=True)
+    st.markdown('<h3 style="color: #1f4788; margin-top: 0px;">Performance Momentum & Course Comparison</h3>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     
@@ -1196,7 +1196,7 @@ with st.container(border=True):
         )
         st.plotly_chart(fig, use_container_width=True)
         st.markdown(
-            '<div class="caption">🔍 Negative values show R2 improvement (better scores). Most players struggled to maintain R1 form.</div>',
+            '<div class="caption">Negative values show R2 improvement (better scores). Most players struggled to maintain R1 form.</div>',
             unsafe_allow_html=True
         )
     
@@ -1223,13 +1223,13 @@ with st.container(border=True):
         )
         st.plotly_chart(fig, use_container_width=True)
         st.markdown(
-            '<div class="caption">🔍 Diagonal line shows equal performance. Points below favor Ocean; above favor Lake.</div>',
+            '<div class="caption">Diagonal line shows equal performance. Points below favor Ocean; above favor Lake.</div>',
             unsafe_allow_html=True
         )
 
 # Round Performance Analysis
 with st.container(border=True):
-    st.markdown('<h3 style="color: #1f4788; margin-top: 0px;">⚖️ Round-by-Round Performance Patterns</h3>', unsafe_allow_html=True)
+    st.markdown('<h3 style="color: #1f4788; margin-top: 0px;">Round-by-Round Performance Patterns</h3>', unsafe_allow_html=True)
     
     # Enhanced R1 vs R2 scatter with better labeling
     filtered_df_with_counts = filtered_df.copy()
@@ -1275,13 +1275,13 @@ with st.container(border=True):
     )
     st.plotly_chart(fig, use_container_width=True)
     st.markdown(
-        '<div class="caption">🔍 Diagonal line shows consistent performance. Points below improved in R2; course sequence affects patterns.</div>',
+        '<div class="caption">Diagonal line shows consistent performance. Points below improved in R2; course sequence affects patterns.</div>',
         unsafe_allow_html=True
     )
 
 # Peak Performance Analysis
 with st.container(border=True):
-    st.markdown('<h3 style="color: #1f4788; margin-top: 0px;">🏆 Peak Performance Zones</h3>', unsafe_allow_html=True)
+    st.markdown('<h3 style="color: #1f4788; margin-top: 0px;">Peak Performance Zones</h3>', unsafe_allow_html=True)
     
     col_nine1, col_nine2 = st.columns([2, 1])
     
@@ -1350,13 +1350,13 @@ with st.container(border=True):
             st.metric("Least Peak Performances", hardest_section, f"{category_counts[min_idx]} players")
     
     st.markdown(
-        '<div class="caption">🔍 Shows where players achieved their lowest nine-hole score, revealing course section preferences and conditions.</div>',
+        '<div class="caption">Shows where players achieved their lowest nine-hole score, revealing course section preferences and conditions.</div>',
         unsafe_allow_html=True
     )
 
 # Statistical Deep Dive
 with st.container(border=True):
-    st.markdown('<h3 style="color: #1f4788; margin-top: 0px;">📋 Statistical Summary & Difficulty Analysis</h3>', unsafe_allow_html=True)
+    st.markdown('<h3 style="color: #1f4788; margin-top: 0px;">Statistical Summary & Difficulty Analysis</h3>', unsafe_allow_html=True)
     
     col_stats1, col_stats2 = st.columns([2, 1])
     
@@ -1382,7 +1382,7 @@ with st.container(border=True):
         )
         
         st.markdown(
-            '<div class="caption">📊 Comprehensive statistical breakdown of scoring performance across all metrics for filtered players.</div>',
+            '<div class="caption">Comprehensive statistical breakdown of scoring performance across all metrics for filtered players.</div>',
             unsafe_allow_html=True
         )
     
@@ -1418,7 +1418,7 @@ with st.container(border=True):
 
 # Hardest Stretches Analysis  
 with st.container(border=True):
-    st.markdown('<h3 style="color: #1f4788; margin-top: 0px;">⛳ Most Challenging Hole Sequences</h3>', unsafe_allow_html=True)
+    st.markdown('<h3 style="color: #1f4788; margin-top: 0px;">Most Challenging Hole Sequences</h3>', unsafe_allow_html=True)
     
     def hardest_stretches(course_name: str) -> pd.DataFrame:
         df = per_hole[per_hole["COURSE"] == course_name]
@@ -1440,7 +1440,7 @@ with st.container(border=True):
                 "Course": course_name, 
                 "Stretch": f"Holes {start}-{start+2}", 
                 "Avg vs Par": float(np.sum(window)),
-                "Difficulty": "🔥 Brutal" if np.sum(window) > 2.0 else "⚠️ Tough" if np.sum(window) > 1.0 else "😐 Moderate"
+                "Difficulty": "Brutal" if np.sum(window) > 2.0 else "Tough" if np.sum(window) > 1.0 else "Moderate"
             })
         return pd.DataFrame(stretches).nlargest(3, "Avg vs Par")
     
@@ -1460,7 +1460,7 @@ with st.container(border=True):
     )
     
     st.markdown(
-        '<div class="caption">⛳ Most punishing consecutive three-hole sequences based on scoring difficulty relative to par. Higher values indicate greater challenge.</div>',
+        '<div class="caption">Most punishing consecutive three-hole sequences based on scoring difficulty relative to par. Higher values indicate greater challenge.</div>',
         unsafe_allow_html=True
     )
 
