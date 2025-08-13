@@ -25,6 +25,21 @@ st.markdown(
         text-align: center;
         margin-top: 0;
     }
+    .attribution {
+        font-size: 0.9rem;
+        color: #888;
+        text-align: center;
+        margin-top: 5px;
+        margin-bottom: 0;
+    }
+    .attribution a {
+        color: #1f4788;
+        text-decoration: none;
+    }
+    .attribution a:hover {
+        color: #0d2647;
+        text-decoration: underline;
+    }
     .header-row {
         display: flex;
         align-items: center;
@@ -462,6 +477,12 @@ else:
         '<p class="sub-header">The Olympic Club, San Francisco</p>',
         unsafe_allow_html=True,
     )
+
+# Attribution line
+st.markdown(
+    '<p class="attribution">Built by <a href="https://github.com/jackrocca/us-amateur-data-app" target="_blank">🔗 Jack Rocca</a></p>',
+    unsafe_allow_html=True,
+)
 st.markdown("---")
 
 # Show trivia modal - if not completed, stop here
@@ -1173,16 +1194,32 @@ with col2:
 # R1 vs R2 scatter
 st.subheader("Round 1 vs Round 2 Scores")
 
-# Calculate counts for legend labels
-made_cut_count = filtered_df['MADE_CUT'].sum()
-missed_cut_count = len(filtered_df) - made_cut_count
-
-# Update the dataframe with count labels for legend
+# Calculate counts for legend labels by course sequence and cut status
 filtered_df_with_counts = filtered_df.copy()
-filtered_df_with_counts['MADE_CUT_LABEL'] = filtered_df_with_counts['MADE_CUT'].map({
-    True: f'Made Cut (n={made_cut_count})',
-    False: f'Missed Cut (n={missed_cut_count})'
-})
+
+# Create a detailed label that includes course sequence and cut status counts
+def create_cut_label(row):
+    cut_status = row['MADE_CUT']
+    course_seq = row['COURSE_SEQUENCE']
+    
+    # Count for this specific combination
+    count = len(filtered_df[(filtered_df['MADE_CUT'] == cut_status) & (filtered_df['COURSE_SEQUENCE'] == course_seq)])
+    
+    if cut_status:
+        return f'Made Cut - {course_seq} (n={count})'
+    else:
+        return f'Missed Cut - {course_seq} (n={count})'
+
+filtered_df_with_counts['MADE_CUT_LABEL'] = filtered_df_with_counts.apply(create_cut_label, axis=1)
+
+# Create color mapping for all possible label combinations
+unique_labels = filtered_df_with_counts['MADE_CUT_LABEL'].unique()
+color_map = {}
+for label in unique_labels:
+    if 'Made Cut' in label:
+        color_map[label] = MADE_COLOR
+    else:
+        color_map[label] = MISSED_COLOR
 
 fig = px.scatter(
     filtered_df_with_counts,
@@ -1190,10 +1227,7 @@ fig = px.scatter(
     y="ROUND_2_SCORE",
     color="MADE_CUT_LABEL",
     symbol="COURSE_SEQUENCE",
-    color_discrete_map={
-        f'Made Cut (n={made_cut_count})': MADE_COLOR, 
-        f'Missed Cut (n={missed_cut_count})': MISSED_COLOR
-    },
+    color_discrete_map=color_map,
     hover_data=["PLAYER", "POS"],
 )
 fig.add_shape(type="line", x0=60, y0=60, x1=85, y1=85, line=dict(color="red", dash="dash"))
