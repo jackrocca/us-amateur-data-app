@@ -478,15 +478,81 @@ with player_tab1:
             st.markdown('</div>', unsafe_allow_html=True)
             
         with col2c:
-            improved = enhanced["IMPROVED_R2"].sum()
-            total_with_both = enhanced["IMPROVED_R2"].notna().sum()
-            st.markdown('<div class="metric-card">', unsafe_allow_html=True)
-            st.metric(
-                "Improved in R2", 
-                improved,
-                f"{improved/total_with_both*100:.1f}%"
+            # R2 Improvers vs Worseners Analysis
+            st.subheader("Round 2 Performance Changes")
+            
+            # Calculate improvements/worsening from R1 to R2
+            enhanced['R1_TO_R2_CHANGE'] = enhanced['ROUND_2_SCORE'] - enhanced['ROUND_1_SCORE']
+            valid_changes = enhanced['R1_TO_R2_CHANGE'].dropna()
+            
+            improved_count = (valid_changes < 0).sum()  # Negative means better score
+            worsened_count = (valid_changes > 0).sum()   # Positive means worse score  
+            tied_count = (valid_changes == 0).sum()      # Same score
+            total_count = len(valid_changes)
+            
+            # Create simple grouped bar chart
+            change_data = pd.DataFrame({
+                'Category': ['Improved', 'Tied', 'Worsened'],
+                'Count': [improved_count, tied_count, worsened_count],
+                'Percentage': [
+                    improved_count/total_count*100,
+                    tied_count/total_count*100, 
+                    worsened_count/total_count*100
+                ]
+            })
+            
+            fig = px.bar(
+                change_data,
+                x='Category',
+                y='Count',
+                title='R1→R2 Performance Changes',
+                color='Category',
+                color_discrete_map={
+                    'Improved': MADE_COLOR,
+                    'Tied': NEUTRAL_COLOR, 
+                    'Worsened': MISSED_COLOR
+                },
+                text='Count'
             )
-            st.markdown('</div>', unsafe_allow_html=True)
+            
+            # Add percentage labels
+            fig.update_traces(
+                texttemplate='%{text}<br>(%{customdata:.1f}%)',
+                customdata=change_data['Percentage'],
+                textposition='outside'
+            )
+            
+            fig.update_layout(
+                showlegend=False,
+                yaxis_title="Number of Players",
+                xaxis_title=""
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
+    # Performance-oriented tables
+    st.subheader("Top Performers")
+    
+    col_a, col_b = st.columns(2)
+    
+    with col_a:
+        st.markdown("**Top R2 Improvers**")
+        # Calculate round 2 improvement (negative = better)
+        enhanced['R2_IMPROVEMENT'] = enhanced['ROUND_1_SCORE'] - enhanced['ROUND_2_SCORE']
+        r2_improvers = enhanced[enhanced['R2_IMPROVEMENT'].notna()].nlargest(10, 'R2_IMPROVEMENT')[
+            ['PLAYER', 'ROUND_1_SCORE', 'ROUND_2_SCORE', 'R2_IMPROVEMENT', 'TOTAL_SCORE']
+        ].copy()
+        r2_improvers.columns = ['Player', 'R1 Score', 'R2 Score', 'R2 Improvement', 'Total']
+        st.dataframe(r2_improvers, use_container_width=True, hide_index=True)
+    
+    with col_b:
+        st.markdown("**Best Totals (Made Cut)**")
+        made_cut_best = enhanced[enhanced['MADE_CUT']].nsmallest(10, 'TOTAL_SCORE')[
+            ['PLAYER', 'POS_RANK', 'ROUND_1_SCORE', 'ROUND_2_SCORE', 'TOTAL_SCORE']
+        ].copy()
+        made_cut_best['TO_PAR'] = made_cut_best['TOTAL_SCORE'] - 140
+        made_cut_best = made_cut_best[['PLAYER', 'POS_RANK', 'TOTAL_SCORE', 'TO_PAR']]
+        made_cut_best.columns = ['Player', 'Position', 'Total Score', 'To Par']
+        st.dataframe(made_cut_best, use_container_width=True, hide_index=True)
 
 with player_tab2:
     made_cut_df = enhanced[enhanced["MADE_CUT"]]
@@ -594,11 +660,7 @@ with player_tab2:
     )
     st.plotly_chart(fig, use_container_width=True)
 
-    # Cut makers by starting nine
-    st.subheader("Impact of Starting Nine (Round 2)")
-    start_stats = made_cut_df.groupby("ROUND_2_START").agg({"PLAYER": "count", "TOTAL_SCORE": "mean", "ROUND_2_SCORE": "mean"}).round(2)
-    start_stats.columns = ["Players", "Avg Total", "Avg R2 Score"]
-    st.dataframe(start_stats, use_container_width=True)
+
 
 with player_tab3:
     missed_cut_df = enhanced[~enhanced["MADE_CUT"]]
@@ -631,15 +693,9 @@ with player_tab3:
 st.markdown('<h2 class="section-header">Advanced Analytics</h2>', unsafe_allow_html=True)
 
 # Interactive filters
-col1, col2, col3 = st.columns(3)
-with col1:
-    country_filter = st.multiselect(
-        "Filter by Country",
-        options=["All"] + sorted(enhanced["CTRY"].unique().tolist()),
-        default=["All"],
-    )
+col1, col2 = st.columns(2)
 
-with col2:
+with col1:
     score_range = st.slider(
         "Total Score Range",
         min_value=int(enhanced["TOTAL_SCORE"].min()),
@@ -647,13 +703,11 @@ with col2:
         value=(int(enhanced["TOTAL_SCORE"].min()), int(enhanced["TOTAL_SCORE"].max())),
     )
 
-with col3:
+with col2:
     round2_start = st.selectbox("Round 2 Start", options=["All", "Front", "Back"])
 
 # Apply filters
 filtered_df = enhanced.copy()
-if "All" not in country_filter:
-    filtered_df = filtered_df[filtered_df["CTRY"].isin(country_filter)]
 filtered_df = filtered_df[(filtered_df["TOTAL_SCORE"] >= score_range[0]) & (filtered_df["TOTAL_SCORE"] <= score_range[1])]
 if round2_start != "All":
     filtered_df = filtered_df[filtered_df["ROUND_2_START"] == round2_start]
@@ -689,17 +743,32 @@ with col2:
 
 # R1 vs R2 scatter
 st.subheader("Round 1 vs Round 2 Scores")
+
+# Calculate counts for legend labels
+made_cut_count = filtered_df['MADE_CUT'].sum()
+missed_cut_count = len(filtered_df) - made_cut_count
+
+# Update the dataframe with count labels for legend
+filtered_df_with_counts = filtered_df.copy()
+filtered_df_with_counts['MADE_CUT_LABEL'] = filtered_df_with_counts['MADE_CUT'].map({
+    True: f'Made Cut (n={made_cut_count})',
+    False: f'Missed Cut (n={missed_cut_count})'
+})
+
 fig = px.scatter(
-    filtered_df,
+    filtered_df_with_counts,
     x="ROUND_1_SCORE",
     y="ROUND_2_SCORE",
-    color="MADE_CUT",
+    color="MADE_CUT_LABEL",
     symbol="COURSE_SEQUENCE",
-    color_discrete_map={True: MADE_COLOR, False: MISSED_COLOR},
+    color_discrete_map={
+        f'Made Cut (n={made_cut_count})': MADE_COLOR, 
+        f'Missed Cut (n={missed_cut_count})': MISSED_COLOR
+    },
     hover_data=["PLAYER", "POS"],
 )
 fig.add_shape(type="line", x0=60, y0=60, x1=85, y1=85, line=dict(color="red", dash="dash"))
-fig.update_layout(legend_title_text="Made Cut")
+fig.update_layout(legend_title_text="Cut Status")
 st.plotly_chart(fig, use_container_width=True)
 
 # Best nine analysis

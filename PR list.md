@@ -46,7 +46,7 @@
 - Acceptance criteria:
   - Overall tab shows the course averages and distributions without the heatmap; Lake/Ocean tabs retain hole‑level detail.
 
-## PR 06 — Player Analysis: replace country pie with deemphasized bar or move to expander [ ]
+## PR 06 — Player Analysis: replace country pie with deemphasized bar or move to expander [x]
 
 - Rationale: US Amateur is predominantly Americans; the chart is low‑signal.
 - Changes:
