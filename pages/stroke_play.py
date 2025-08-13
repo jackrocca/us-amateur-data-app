@@ -6,6 +6,8 @@ from plotly.subplots import make_subplots
 import numpy as np
 from pathlib import Path
 import base64
+import datetime
+import os
 
 # Custom CSS
 st.markdown(
@@ -42,7 +44,6 @@ st.markdown(
     }
     .section-header {
         color: #1f4788;
-        border-bottom: 2px solid #1f4788;
         padding-bottom: 10px;
         margin-top: 30px;
         margin-bottom: 20px;
@@ -113,6 +114,330 @@ def _as_data_uri(path):
 # Load data
 enhanced, per_hole, course_pars = load_data()
 
+# Function to save trivia results
+def save_trivia_results(name, score, total, detailed_results):
+    """Save trivia results to local CSV file."""
+    try:
+        results_file = Path("trivia_results.csv")
+        
+        # Create new result entry
+        result_entry = {
+            'timestamp': datetime.datetime.now().isoformat(),
+            'name': name,
+            'score': score,
+            'total': total,
+            'percentage': round((score / total) * 100, 1),
+            'detailed_results': str(detailed_results)  # Store as string for CSV
+        }
+        
+        # Load existing results or create new DataFrame
+        if results_file.exists():
+            existing_df = pd.read_csv(results_file)
+            new_df = pd.concat([existing_df, pd.DataFrame([result_entry])], ignore_index=True)
+        else:
+            new_df = pd.DataFrame([result_entry])
+        
+        # Save to CSV
+        new_df.to_csv(results_file, index=False)
+        
+        return True
+    except Exception as e:
+        st.error(f"Failed to save results: {str(e)}")
+        return False
+
+# Trivia Modal - Must be completed before viewing the page
+def show_trivia_modal():
+    """Display trivia modal that must be completed before accessing the main page."""
+    
+    # Initialize session state for trivia
+    if 'trivia_completed' not in st.session_state:
+        st.session_state.trivia_completed = False
+    if 'trivia_results' not in st.session_state:
+        st.session_state.trivia_results = None
+    if 'show_trivia_modal' not in st.session_state:
+        st.session_state.show_trivia_modal = True
+    
+    # Trivia Questions and Correct Answers
+    trivia_data = {
+        "q1": {
+            "question": "What was the average score on Lake Course? (Rounded to nearest whole number)",
+            "answer": 75,
+            "explanation": "The average score on Lake Course was 74.89, which rounds to 75."
+        },
+        "q2": {
+            "question": "What was the average score on Ocean Course? (Rounded to nearest whole number)",
+            "answer": 74,
+            "explanation": "The average score on Ocean Course was 73.9, which rounds to 74."
+        },
+        "q3": {
+            "question": "What was the hardest hole on Lake Course? (Based on average score relative to par)",
+            "answer": 1,
+            "explanation": "Hole 1 on Lake was the hardest, playing 0.79 strokes over par on average."
+        },
+        "q4": {
+            "question": "What was the hardest hole on Ocean Course? (Based on average score relative to par)",
+            "answer": 1,
+            "explanation": "Hole 1 on Ocean was also the hardest, playing 0.66 strokes over par on average."
+        },
+        "q5": {
+            "question": "How many holes on Lake Course were players more likely to birdie than bogey?",
+            "answer": 4,
+            "explanation": "4 holes on Lake (holes 7, 14, 15, and 17) had more birdies than bogeys."
+        },
+        "q6": {
+            "question": "Did players who played Lake in Round 1 do better or worse than those who started on Ocean?",
+            "answer": "Worse",
+            "explanation": "Players who started on Lake averaged 149.1 vs 148.6 for those who started on Ocean (lower is better)."
+        },
+        "q7": {
+            "question": "What was the hardest 3-hole stretch on Lake Course? (Format: X-Y, e.g., 1-3)",
+            "answer": "1-3",
+            "explanation": "Holes 1-3 on Lake were the hardest 3-hole stretch, playing 1.68 strokes over par."
+        },
+        "q8": {
+            "question": "What was the easiest 3-hole stretch on Ocean Course? (Format: X-Y, e.g., 3-5)",
+            "answer": "3-5",
+            "explanation": "Holes 3-5 on Ocean were the easiest stretch, playing only 0.13 strokes over par."
+        },
+        "q9": {
+            "question": "Which 9-hole stretch did players perform best on?",
+            "answer": "Ocean Front",
+            "explanation": "Ocean Front 9 had the lowest average score at 4.10 strokes per hole."
+        },
+        "q10": {
+            "question": "Which player had the worst swing between rounds 1 and round 2, and by how many strokes?",
+            "answer": {"player": "Connor Williams", "strokes": 16},
+            "explanation": "Connor Williams R1 69 → R2 85 Yikes! A devastating +16 stroke swing from Ocean to Lake."
+        }
+    }
+    
+    # Show modal if trivia not completed
+    if not st.session_state.trivia_completed:
+        if st.session_state.show_trivia_modal:
+            
+            @st.dialog("🏆 US Amateur Championship Trivia")
+            def trivia_modal():
+                st.markdown("**Test your knowledge of the championship data!**")
+                st.markdown("Complete this 10-question trivia to unlock the full stroke play analysis.")
+                
+                with st.form("trivia_form"):
+                    user_answers = {}
+                    
+                    # Name field
+                    user_answers['name'] = st.text_input(
+                        "Enter your name:",
+                        placeholder="Your name here...",
+                        help="This will be saved with your trivia results"
+                    )
+                    st.markdown("---")
+                    
+                    # Question 1
+                    user_answers['q1'] = st.number_input(
+                        trivia_data['q1']['question'], 
+                        min_value=60, max_value=90, value=70, step=1
+                    )
+                    
+                    # Question 2  
+                    user_answers['q2'] = st.number_input(
+                        trivia_data['q2']['question'],
+                        min_value=60, max_value=90, value=70, step=1
+                    )
+                    
+                    # Question 3
+                    user_answers['q3'] = st.selectbox(
+                        trivia_data['q3']['question'],
+                        options=list(range(1, 19))
+                    )
+                    
+                    # Question 4
+                    user_answers['q4'] = st.selectbox(
+                        trivia_data['q4']['question'],
+                        options=list(range(1, 19))
+                    )
+                    
+                    # Question 5
+                    user_answers['q5'] = st.number_input(
+                        trivia_data['q5']['question'],
+                        min_value=0, max_value=18, value=2, step=1
+                    )
+                    
+                    # Question 6
+                    user_answers['q6'] = st.selectbox(
+                        trivia_data['q6']['question'],
+                        options=["Better", "Worse", "Same"]
+                    )
+                    
+                    # Question 7
+                    stretch_options = [f"{i}-{i+2}" for i in range(1, 17)]
+                    user_answers['q7'] = st.selectbox(
+                        trivia_data['q7']['question'],
+                        options=stretch_options
+                    )
+                    
+                    # Question 8
+                    user_answers['q8'] = st.selectbox(
+                        trivia_data['q8']['question'],
+                        options=stretch_options
+                    )
+                    
+                    # Question 9
+                    user_answers['q9'] = st.selectbox(
+                        trivia_data['q9']['question'],
+                        options=["Ocean Front", "Ocean Back", "Lake Front", "Lake Back"]
+                    )
+                    
+                    # Question 10 - Two part question
+                    st.markdown(trivia_data['q10']['question'])
+                    col_player, col_strokes = st.columns([2, 1])
+                    
+                    with col_player:
+                        # Top 5 worst swings based on our calculation
+                        worst_swing_players = [
+                            "Connor Williams", "Mesa Falleur", "Richard Teder", "Ieuan Jones", "Jager Pain"
+                        ]
+                        user_answers['q10_player'] = st.selectbox(
+                            "Select player:",
+                            options=worst_swing_players,
+                            key="q10_player"
+                        )
+                    
+                    with col_strokes:
+                        user_answers['q10_strokes'] = st.number_input(
+                            "Stroke difference:",
+                            min_value=1, max_value=20, value=5, step=1,
+                            key="q10_strokes"
+                        )
+                    
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        submitted = st.form_submit_button("Submit Trivia", type="primary", use_container_width=True)
+                    with col2:
+                        skip = st.form_submit_button("Skip Trivia", use_container_width=True)
+                    
+                    if submitted:
+                        # Validate name is provided
+                        if not user_answers['name'].strip():
+                            st.error("Please enter your name to submit the trivia!")
+                            st.stop()
+                        
+                        # Calculate results
+                        correct_count = 0
+                        results = {}
+                        
+                        for q_id, q_data in trivia_data.items():
+                            if q_id == 'q10':
+                                # Handle two-part question
+                                user_player = user_answers['q10_player']
+                                user_strokes = user_answers['q10_strokes']
+                                correct_player = q_data['answer']['player']
+                                correct_strokes = q_data['answer']['strokes']
+                                
+                                player_correct = user_player == correct_player
+                                strokes_correct = user_strokes == correct_strokes
+                                is_correct = player_correct and strokes_correct
+                                
+                                if is_correct:
+                                    correct_count += 1
+                                
+                                user_answer_display = f"{user_player} (+{user_strokes} strokes)"
+                                correct_answer_display = f"{correct_player} (+{correct_strokes} strokes)"
+                                
+                                results[q_id] = {
+                                    'question': q_data['question'],
+                                    'user_answer': user_answer_display,
+                                    'correct_answer': correct_answer_display,
+                                    'is_correct': is_correct,
+                                    'explanation': q_data['explanation']
+                                }
+                            else:
+                                # Handle regular questions
+                                user_answer = user_answers[q_id]
+                                correct_answer = q_data['answer']
+                                
+                                is_correct = user_answer == correct_answer
+                                if is_correct:
+                                    correct_count += 1
+                                
+                                results[q_id] = {
+                                    'question': q_data['question'],
+                                    'user_answer': user_answer,
+                                    'correct_answer': correct_answer,
+                                    'is_correct': is_correct,
+                                    'explanation': q_data['explanation']
+                                }
+                        
+                        # Store results in session state
+                        trivia_results = {
+                            'name': user_answers['name'].strip(),
+                            'score': correct_count,
+                            'total': len(trivia_data),
+                            'results': results
+                        }
+                        
+                        # Save results to file
+                        if save_trivia_results(
+                            trivia_results['name'], 
+                            trivia_results['score'], 
+                            trivia_results['total'], 
+                            trivia_results['results']
+                        ):
+                            st.success(f"Results saved for {trivia_results['name']}!")
+                        
+                        st.session_state.trivia_results = trivia_results
+                        st.session_state.trivia_completed = True
+                        st.session_state.show_trivia_modal = False
+                        st.rerun()
+                    
+                    if skip:
+                        st.session_state.trivia_completed = True
+                        st.session_state.show_trivia_modal = False
+                        st.session_state.trivia_results = None
+                        st.rerun()
+            
+            trivia_modal()
+        
+        return False  # Don't show main content
+    
+    else:
+        # Show results if trivia was completed
+        if st.session_state.trivia_results:
+            name = st.session_state.trivia_results['name']
+            score = st.session_state.trivia_results['score']
+            total = st.session_state.trivia_results['total']
+            percentage = (score / total) * 100
+            
+            st.success(f"🎉 Trivia Complete, {name}! You scored {score}/{total} ({percentage:.1f}%)")
+            
+            with st.expander("📊 View Your Trivia Results", expanded=False):
+                results = st.session_state.trivia_results['results']
+                
+                for q_id, result in results.items():
+                    if result['is_correct']:
+                        st.success(f"✅ **{result['question']}**")
+                        st.write(f"Your answer: {result['user_answer']} ✓")
+                    else:
+                        st.error(f"❌ **{result['question']}**")
+                        st.write(f"Your answer: {result['user_answer']}")
+                        st.write(f"Correct answer: {result['correct_answer']}")
+                    
+                    st.info(f"📖 {result['explanation']}")
+                    st.markdown("---")
+            
+            # Option to retake
+            col1, col2 = st.columns([3, 1])
+            with col2:
+                if st.button("🔄 Retake Trivia", use_container_width=True):
+                    st.session_state.trivia_completed = False
+                    st.session_state.trivia_results = None
+                    st.session_state.show_trivia_modal = True
+                    st.rerun()
+        else:
+            # Trivia was skipped
+            st.info("ℹ️ You skipped the trivia. You can take it anytime by refreshing the page.")
+        
+        st.markdown("---")
+        return True  # Show main content
+
 # Header with optional logo
 logo_path = _find_logo_path()
 logo_uri = _as_data_uri(logo_path) if logo_path else None
@@ -139,39 +464,45 @@ else:
     )
 st.markdown("---")
 
+# Show trivia modal - if not completed, stop here
+if not show_trivia_modal():
+    st.stop()
+
 # Basic Metrics Section
 st.markdown('<h2 class="section-header">Championship Overview</h2>', unsafe_allow_html=True)
 
-col1, col2, col3, col4, col5 = st.columns(5)
+with st.container(border=True):
+    col1, col2, col3, col4, col5 = st.columns(5)
 
-with col1:
-    st.metric("Total Players", len(enhanced), help="Total field size for stroke play")
+    with col1:
+        st.metric("Total Players", len(enhanced), help="Total field size for stroke play")
 
-with col2:
-    made_cut = enhanced["MADE_CUT"].sum()
-    st.metric(
-        "Made Cut", made_cut, f"{made_cut/len(enhanced)*100:.1f}%", help="Top 64 players advance to match play"
-    )
+    with col2:
+        made_cut = enhanced["MADE_CUT"].sum()
+        st.metric(
+            "Made Cut", made_cut, f"{made_cut/len(enhanced)*100:.1f}%", help="Top 64 players advance to match play"
+        )
 
-with col3:
-    avg_score = enhanced["TOTAL_SCORE"].mean()
-    st.metric(
-        "Avg Total Score",
-        f"{avg_score:.1f}",
-        f"{(avg_score - 140)/140*100:+.1f}% vs par 140",
-        delta_color="inverse",
-    )
+    with col3:
+        avg_score = enhanced["TOTAL_SCORE"].mean()
+        st.metric(
+            "Avg Total Score",
+            f"{avg_score:.1f}",
+            f"{(avg_score - 140)/140*100:+.1f}% vs par 140",
+            delta_color="inverse",
+        )
 
-with col4:
-    leader_score = enhanced.loc[enhanced["POS_RANK"] == 1, "TOTAL_SCORE"].iloc[0]
-    st.metric("Leader Score", leader_score, f"{leader_score - 140:+d} to par", delta_color="inverse")
+    with col4:
+        leader_score = enhanced.loc[enhanced["POS_RANK"] == 1, "TOTAL_SCORE"].iloc[0]
+        st.metric("Leader Score", leader_score, f"{leader_score - 140:+d} to par", delta_color="inverse")
 
-with col5:
-    cut_line = enhanced[enhanced["MADE_CUT"]]["TOTAL_SCORE"].max()
-    st.metric("Cut Line", f"+{cut_line - 140}", f"{cut_line} strokes", help="Score needed to make top 64")
+    with col5:
+        cut_line = enhanced[enhanced["MADE_CUT"]]["TOTAL_SCORE"].max()
+        st.metric("Cut Line", f"+{cut_line - 140}", f"{cut_line} strokes", help="Score needed to make top 64")
 
 # Distribution of total scores with cut/leader overlays
-colA, colB = st.columns(2)
+with st.container(border=True):
+    colA, colB = st.columns(2)
 with colA:
     fig = px.histogram(
         enhanced,
@@ -188,6 +519,7 @@ with colA:
         x=int(leader_score), line_dash="dot", line_color="green", annotation_text="Leader", annotation_position="top right"
     )
     st.plotly_chart(fig, use_container_width=True)
+
 with colB:
     to_par = enhanced["TOTAL_SCORE"] - 140
     fig = px.ecdf(
@@ -201,13 +533,16 @@ with colB:
     st.plotly_chart(fig, use_container_width=True)
     st.caption("Fraction of players at or below each total to‑par after 36 holes (par 140). Lower values indicate better scoring.")
 
+st.divider()
+
 # Course Analysis Section
 st.markdown('<h2 class="section-header">Course Analysis</h2>', unsafe_allow_html=True)
 
 course_tab1, course_tab2, course_tab3 = st.tabs(["Overall", "Lake Course", "Ocean Course"])
 
 with course_tab1:
-    col1, col2 = st.columns(2)
+    with st.container(border=True):
+        col1, col2 = st.columns(2)
 
     with col1:
         # Course difficulty comparison
@@ -226,6 +561,7 @@ with course_tab1:
         )
         fig.update_layout(title="Average Score by Course", yaxis_title="Average Score", showlegend=False)
         st.plotly_chart(fig, use_container_width=True)
+        st.caption("Relative to par 70 on both courses. Lower scores indicate better performance.")
 
     with col2:
         # Score distribution by course
@@ -248,6 +584,7 @@ with course_tab1:
             color_discrete_map={"Lake": LAKE_COLOR, "Ocean": OCEAN_COLOR},
         )
         st.plotly_chart(fig, use_container_width=True)
+        st.caption("Distribution of individual round scores. Box plots show quartiles, violin shape shows density.")
 
     # Per-round to-par by course (explanatory caption)
     r1 = (
@@ -273,11 +610,13 @@ with course_tab1:
         color_discrete_map={"R1": NEUTRAL_COLOR, "R2": LAKE_COLOR},
     )
     fig.update_layout(yaxis_title="Avg To-Par")
-    st.plotly_chart(fig, use_container_width=True)
-    st.markdown(
-        '<div class="caption">Average player score relative to official par (negative = under par). Grouped by course and round.</div>',
-        unsafe_allow_html=True,
-    )
+
+    with st.container(border=True):
+        st.plotly_chart(fig, use_container_width=True)
+        st.markdown(
+            '<div class="caption">Average player score relative to official par (negative = under par). Grouped by course and round.</div>',
+            unsafe_allow_html=True,
+        )
 
 with course_tab2:
     # Lake Course hole-by-hole analysis
@@ -323,10 +662,13 @@ with course_tab2:
         yaxis_title="Average vs Par",
         xaxis=dict(tickmode="linear", tick0=1, dtick=1),
     )
-    st.plotly_chart(fig, use_container_width=True)
+
+    with st.container(border=True):
+        st.plotly_chart(fig, use_container_width=True)
+        st.caption("Positive values indicate holes playing above par (harder), negative values below par (easier).")
 
     # Scoring rates by hole (stacked)
-    st.subheader("Scoring Rates by Hole - Lake")
+    
     rates = []
     for _, r in hole_stats_df.iterrows():
         total = r["Eagles"] + r["Birdies"] + r["Pars"] + r["Bogeys"] + r["Double+"]
@@ -345,8 +687,10 @@ with course_tab2:
     fig.add_trace(go.Bar(x=rates_df["Hole"], y=rates_df["Birdie or Better %"], name="Birdie or Better"))
     fig.add_trace(go.Bar(x=rates_df["Hole"], y=rates_df["Par %"], name="Par"))
     fig.add_trace(go.Bar(x=rates_df["Hole"], y=rates_df["Bogey or Worse %"], name="Bogey or Worse"))
-    fig.update_layout(barmode="stack", xaxis=dict(tickmode="linear", tick0=1, dtick=1))
-    st.plotly_chart(fig, use_container_width=True)
+    fig.update_layout(title = "Scoring Rates by Hole - Lake", barmode="stack", xaxis=dict(tickmode="linear", tick0=1, dtick=1))
+
+    with st.container(border=True):
+        st.plotly_chart(fig, use_container_width=True)
 
 with course_tab3:
     # Ocean Course hole-by-hole analysis
@@ -391,11 +735,15 @@ with course_tab3:
         xaxis_title="Hole",
         yaxis_title="Average vs Par",
         xaxis=dict(tickmode="linear", tick0=1, dtick=1),
+        margin=dict(t=40, b=40, l=40, r=40),
     )
-    st.plotly_chart(fig, use_container_width=True)
+
+    with st.container(border=True):
+        st.plotly_chart(fig, use_container_width=True)
+        st.caption("Positive values indicate holes playing above par (harder), negative values below par (easier).")
 
     # Scoring rates by hole (stacked)
-    st.subheader("Scoring Rates by Hole - Ocean")
+
     rates = []
     for _, r in hole_stats_df.iterrows():
         total = r["Eagles"] + r["Birdies"] + r["Pars"] + r["Bogeys"] + r["Double+"]
@@ -414,14 +762,16 @@ with course_tab3:
     fig.add_trace(go.Bar(x=rates_df["Hole"], y=rates_df["Birdie or Better %"], name="Birdie or Better"))
     fig.add_trace(go.Bar(x=rates_df["Hole"], y=rates_df["Par %"], name="Par"))
     fig.add_trace(go.Bar(x=rates_df["Hole"], y=rates_df["Bogey or Worse %"], name="Bogey or Worse"))
-    fig.update_layout(barmode="stack", xaxis=dict(tickmode="linear", tick0=1, dtick=1))
-    st.plotly_chart(fig, use_container_width=True)
+    fig.update_layout(title = "Scoring Rates by Hole - Ocean", barmode="stack", xaxis=dict(tickmode="linear", tick0=1, dtick=1))
+    
+    with st.container(border=True):
+        st.plotly_chart(fig, use_container_width=True)
 
-
+st.divider()
 # Player Analysis Section
 st.markdown('<h2 class="section-header">Player Analysis</h2>', unsafe_allow_html=True)
 
-player_tab1, player_tab2, player_tab3 = st.tabs(["Entire Field", "Made the Cut", "Missed the Cut"])
+player_tab1, player_tab2, player_tab3, player_tab4 = st.tabs(["Entire Field", "Made the Cut", "Missed the Cut", "Player Spotlight"])
 
 with player_tab1:
     # Age distribution and scoring trends
@@ -453,31 +803,6 @@ with player_tab1:
         st.plotly_chart(fig, use_container_width=True)
 
     with col2:
-        # Course performance comparison
-        ocean_better = enhanced[enhanced["COURSE_DIFFERENTIAL"] < 0]
-        lake_better = enhanced[enhanced["COURSE_DIFFERENTIAL"] > 0]
-        
-        col2a, col2b, col2c = st.columns(3)
-        
-        with col2a:
-            st.markdown('<div class="metric-card">', unsafe_allow_html=True)
-            st.metric(
-                "Better on Ocean", 
-                len(ocean_better),
-                f"{len(ocean_better)/len(enhanced[enhanced['COURSE_DIFFERENTIAL'].notna()])*100:.1f}%"
-            )
-            st.markdown('</div>', unsafe_allow_html=True)
-        
-        with col2b:
-            st.markdown('<div class="metric-card">', unsafe_allow_html=True)
-            st.metric(
-                "Better on Lake", 
-                len(lake_better),
-                f"{len(lake_better)/len(enhanced[enhanced['COURSE_DIFFERENTIAL'].notna()])*100:.1f}%"
-            )
-            st.markdown('</div>', unsafe_allow_html=True)
-            
-        with col2c:
             # R2 Improvers vs Worseners Analysis
             st.subheader("Round 2 Performance Changes")
             
@@ -659,6 +984,7 @@ with player_tab2:
         yaxis_title="Scoring Average"
     )
     st.plotly_chart(fig, use_container_width=True)
+    st.caption("Correlation between final position and scoring average among players who made the cut.")
 
 
 
@@ -687,6 +1013,117 @@ with player_tab3:
         close_misses["CUT_MARGIN"] = close_misses["CUT_MARGIN"].abs()
         close_misses.columns = ["Player", "Position", "Total Score", "Shots Missed By"]
         st.dataframe(close_misses, use_container_width=True)
+
+with player_tab4:
+    # Dynamic Player Data Viewer
+    st.subheader("Player Data Viewer")
+    col_slider, col_info = st.columns([3, 1])
+
+    with col_slider:
+        num_players = st.slider(
+            "Number of players to display",
+            min_value=10,
+            max_value=len(enhanced),
+            value=64,  # Top 64 by default
+            step=10,
+            help="Adjust to view top N players by position"
+        )
+
+    with col_info:
+        st.metric("Total Players", len(enhanced))
+
+    # Display top N players in scrollable container
+    top_players = enhanced.sort_values(['POS_RANK', 'PLAYER']).head(num_players)
+
+    # Select relevant columns for display
+    display_columns = [
+        'PLAYER', 'POS', 'TO_PAR', 'MADE_CUT', 'TOTAL_SCORE', 
+        'ROUND_1_SCORE', 'ROUND_2_SCORE', 'CTRY', 'ROUND_1_COURSE', 
+        'ROUND_2_COURSE', 'SCORING_AVERAGE'
+    ]
+
+    # Create a container with fixed height for scrolling
+    with st.container(height=400):
+        st.dataframe(
+            top_players[display_columns], 
+            use_container_width=True,
+            hide_index=True,
+            column_config={
+                'PLAYER': 'Player',
+                'POS': 'Position', 
+                'TO_PAR': 'To Par',
+                'MADE_CUT': st.column_config.CheckboxColumn('Made Cut'),
+                'TOTAL_SCORE': 'Total Score',
+                'ROUND_1_SCORE': 'R1 Score',
+                'ROUND_2_SCORE': 'R2 Score', 
+                'CTRY': 'Country',
+                'ROUND_1_COURSE': 'R1 Course',
+                'ROUND_2_COURSE': 'R2 Course',
+                'SCORING_AVERAGE': 'Avg Score'
+            }
+        )
+
+    st.caption(f"Displaying top {num_players} players by position. Use slider above to adjust number of players shown.")
+    
+    st.markdown("---")
+    
+    # Individual Player Analysis
+    st.subheader("Individual Player Analysis")
+    
+    # Sort players by position (leaders first, handle ties by POS_RANK)
+    player_standings = enhanced.sort_values(['POS_RANK', 'PLAYER'])[['PLAYER', 'POS']].copy()
+    player_display_list = [f"{row['PLAYER']} (Pos: {row['POS']})" for _, row in player_standings.iterrows()]
+    player_name_list = player_standings['PLAYER'].tolist()
+    
+    selected_display = st.selectbox("Select a player", player_display_list, key="player_spotlight_selector")
+    # Extract actual player name from display string
+    selected_player = player_name_list[player_display_list.index(selected_display)]
+    p = enhanced[enhanced["PLAYER"] == selected_player].iloc[0]
+    
+    # Player summary
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Position", p['POS'])
+    with col2:
+        st.metric("Total Score", f"{int(p['TOTAL_SCORE'])}", f"{int(p['TOTAL_SCORE'] - 140):+d} to par")
+    with col3:
+        st.metric("Made Cut", "Yes" if p['MADE_CUT'] else "No")
+    with col4:
+        st.metric("Country", p['CTRY'])
+    
+    st.markdown("---")
+    
+    # Scoring breakdown
+    st.subheader("Round Scoring Breakdown")
+    r1_counts = [p["R1_EAGLES"], p["R1_BIRDIES"], p["R1_PARS"], p["R1_BOGEYS"], p["R1_DOUBLES_PLUS"]]
+    r2_counts = [p["R2_EAGLES"], p["R2_BIRDIES"], p["R2_PARS"], p["R2_BOGEYS"], p["R2_DOUBLES_PLUS"]]
+    labels = ["Eagles", "Birdies", "Pars", "Bogeys", "Doubles+"]
+    fig = go.Figure(data=[go.Bar(name="R1", x=labels, y=r1_counts), go.Bar(name="R2", x=labels, y=r2_counts)])
+    fig.update_layout(barmode="group", title="Round Scoring Breakdown")
+    st.plotly_chart(fig, use_container_width=True)
+    st.caption("Count of scoring outcomes by round for the selected player.")
+
+    # Hole-by-hole line vs par for each round
+    st.subheader("Hole-by-Hole Performance")
+    ph = per_hole[per_hole["PLAYER"] == selected_player]
+    for rnd in [1, 2]:
+        row = ph[ph["ROUND"] == rnd]
+        if row.empty:
+            continue
+        course = row["COURSE"].iloc[0]
+        pars_map = course_pars[course_pars["COURSE"] == course].set_index("HOLE")["PAR"].to_dict()
+        scores = [row[f"HOLE_{h}"].iloc[0] for h in range(1, 19)]
+        vs_par = [scores[h - 1] - pars_map[h] if pd.notna(scores[h - 1]) else np.nan for h in range(1, 19)]
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=list(range(1, 19)), y=vs_par, mode="lines+markers"))
+        fig.update_layout(
+            title=f"Round {rnd} ({course}) — Hole-by-Hole vs Par",
+            xaxis_title="Hole",
+            yaxis_title="Strokes vs Par",
+            xaxis=dict(tickmode="linear", tick0=1, dtick=1),
+            yaxis=dict(dtick=1, tickmode="linear"),
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
 
 # Advanced Analytics Section
@@ -725,7 +1162,9 @@ with col1:
         color_discrete_sequence=["#3498db"],
     )
     fig.add_vline(x=0, line_dash="dash", line_color="red", annotation_text="No Change")
+    fig.update_traces(marker_line_color="rgba(0,0,0,0.6)", marker_line_width=1)
     st.plotly_chart(fig, use_container_width=True)
+    st.caption("Negative values indicate improvement in Round 2 (lower score is better).")
 
 with col2:
     # Course differential for players who played both
@@ -740,6 +1179,7 @@ with col2:
     )
     fig.add_shape(type="line", x0=65, y0=65, x1=85, y1=85, line=dict(color="red", dash="dash"))
     st.plotly_chart(fig, use_container_width=True)
+    st.caption("Diagonal line represents equal performance on both courses. Points below favor Ocean, above favor Lake.")
 
 # R1 vs R2 scatter
 st.subheader("Round 1 vs Round 2 Scores")
@@ -770,57 +1210,69 @@ fig = px.scatter(
 fig.add_shape(type="line", x0=60, y0=60, x1=85, y1=85, line=dict(color="red", dash="dash"))
 fig.update_layout(legend_title_text="Cut Status")
 st.plotly_chart(fig, use_container_width=True)
+st.caption("45-degree line represents consistent performance between rounds. Points below line show Round 2 improvement.")
 
 # Best nine analysis
 st.subheader("Best Nine-Hole Performances")
-best_nine_dist = filtered_df["BEST_NINE_LABEL"].value_counts()
+
+# Convert best nine labels to course+side format
+def convert_to_course_side(row):
+    label = row['BEST_NINE_LABEL']
+    if pd.isna(label):
+        return None
+    
+    # Map round/side to course/side based on the course sequence
+    if label == 'R1 Front':
+        course = row['ROUND_1_COURSE']
+        return f"{course} Front"
+    elif label == 'R1 Back':
+        course = row['ROUND_1_COURSE'] 
+        return f"{course} Back"
+    elif label == 'R2 Front':
+        course = row['ROUND_2_COURSE']
+        return f"{course} Front"
+    elif label == 'R2 Back':
+        course = row['ROUND_2_COURSE']
+        return f"{course} Back"
+    else:
+        return label
+
+filtered_df_nine = filtered_df.copy()
+filtered_df_nine['COURSE_SIDE_LABEL'] = filtered_df_nine.apply(convert_to_course_side, axis=1)
+
+best_nine_dist = filtered_df_nine['COURSE_SIDE_LABEL'].value_counts()
+
+# Ensure we have exactly 4 categories in the expected order
+expected_categories = ["Lake Front", "Lake Back", "Ocean Front", "Ocean Back"]
+category_counts = []
+for cat in expected_categories:
+    count = best_nine_dist.get(cat, 0)
+    category_counts.append(count)
+
 fig = go.Figure(
-    data=[go.Bar(x=best_nine_dist.index, y=best_nine_dist.values, marker_color=["#2ecc71", "#3498db", "#e74c3c", "#f39c12"])]
+    data=[go.Bar(
+        x=expected_categories, 
+        y=category_counts, 
+        marker_color=[LAKE_COLOR, LAKE_COLOR, OCEAN_COLOR, OCEAN_COLOR],
+        text=category_counts,
+        textposition='auto'
+    )]
 )
-fig.update_layout(title="Distribution of Best Nine-Hole Scores by Round/Side", xaxis_title="Round and Side", yaxis_title="Number of Players")
+fig.update_layout(
+    title="Distribution of Best Nine-Hole Scores by Course+Side", 
+    xaxis_title="Course and Side", 
+    yaxis_title="Number of Players"
+)
 st.plotly_chart(fig, use_container_width=True)
+st.caption("Shows where players recorded their best nine-hole score during the championship.")
 
 # Statistical summary
 st.subheader("Statistical Summary")
 summary_stats = filtered_df[["TOTAL_SCORE", "ROUND_1_SCORE", "ROUND_2_SCORE", "LAKE_SCORE", "OCEAN_SCORE"]].describe()
 st.dataframe(summary_stats.round(2), use_container_width=True)
+st.caption("Descriptive statistics for scoring across all filtered players.")
 
-# Player spotlight
-with st.expander("Player Spotlight", expanded=False):
-    player_list = sorted(enhanced["PLAYER"].unique().tolist())
-    selected_player = st.selectbox("Select a player", player_list)
-    p = enhanced[enhanced["PLAYER"] == selected_player].iloc[0]
-    st.markdown(
-        f"**{selected_player}** — POS: {p['POS']} | Total: {int(p['TOTAL_SCORE'])} ({int(p['TOTAL_SCORE'] - 140):+d})"
-    )
-    # Scoring breakdown
-    r1_counts = [p["R1_EAGLES"], p["R1_BIRDIES"], p["R1_PARS"], p["R1_BOGEYS"], p["R1_DOUBLES_PLUS"]]
-    r2_counts = [p["R2_EAGLES"], p["R2_BIRDIES"], p["R2_PARS"], p["R2_BOGEYS"], p["R2_DOUBLES_PLUS"]]
-    labels = ["Eagles", "Birdies", "Pars", "Bogeys", "Doubles+"]
-    fig = go.Figure(data=[go.Bar(name="R1", x=labels, y=r1_counts), go.Bar(name="R2", x=labels, y=r2_counts)])
-    fig.update_layout(barmode="group", title="Round Scoring Breakdown")
-    st.plotly_chart(fig, use_container_width=True)
 
-    # Hole-by-hole line vs par for each round
-    ph = per_hole[per_hole["PLAYER"] == selected_player]
-    for rnd in [1, 2]:
-        row = ph[ph["ROUND"] == rnd]
-        if row.empty:
-            continue
-        course = row["COURSE"].iloc[0]
-        pars_map = course_pars[course_pars["COURSE"] == course].set_index("HOLE")["PAR"].to_dict()
-        scores = [row[f"HOLE_{h}"].iloc[0] for h in range(1, 19)]
-        vs_par = [scores[h - 1] - pars_map[h] if pd.notna(scores[h - 1]) else np.nan for h in range(1, 19)]
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=list(range(1, 19)), y=vs_par, mode="lines+markers"))
-        fig.update_layout(
-            title=f"Round {rnd} ({course}) — Hole-by-Hole vs Par",
-            xaxis_title="Hole",
-            yaxis_title="Strokes vs Par",
-            xaxis=dict(tickmode="linear", tick0=1, dtick=1),
-            yaxis=dict(dtick=1),
-        )
-        st.plotly_chart(fig, use_container_width=True)
 
 # Hardest three-hole stretches
 st.subheader("Hardest Three-Hole Stretches")
@@ -846,5 +1298,6 @@ def hardest_stretches(course_name: str) -> pd.DataFrame:
 
 stretches_df = pd.concat([hardest_stretches("Lake"), hardest_stretches("Ocean")])
 st.dataframe(stretches_df.reset_index(drop=True), use_container_width=True)
+st.caption("Most challenging consecutive three-hole sequences based on average score vs par.")
 
 
