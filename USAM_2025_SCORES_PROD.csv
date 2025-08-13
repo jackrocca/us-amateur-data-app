@@ -1,0 +1,313 @@
+POS,CTRY,PLAYER,TO_PAR,ROUND_1_COURSE,ROUND_1_SCORE,ROUND_2_COURSE,ROUND_2_START,ROUND_2_SCORE,TOTAL
+1,United States of America,Preston Stout,-8,Ocean,67,Lake,Front,65.0,132
+2,United States of America,Tommy Morrison,-6,Ocean,66,Lake,Front,68.0,134
+3,United States of America,Miles Russell,-4,Lake,70,Ocean,Front,66.0,136
+4,United States of America,Logan Reilly,-3,Ocean,67,Lake,Back,70.0,137
+T5,United States of America,Nate Smith,-2,Lake,69,Ocean,Front,69.0,138
+T5,United States of America,Reed Greyserman,-2,Lake,69,Ocean,Back,69.0,138
+T5,United States of America,Bryan Kim,-2,Lake,70,Ocean,Back,68.0,138
+T8,South Africa,Daniel Bennett,-1,Ocean,69,Lake,Front,70.0,139
+T8,Sweden,Daniel Svärd,-1,Ocean,68,Lake,Front,71.0,139
+T8,United States of America,Jase Summy,-1,Lake,70,Ocean,Back,69.0,139
+T8,United States of America,Garrett Risner,-1,Lake,71,Ocean,Back,68.0,139
+T8,United States of America,Eric Lee,-1,Ocean,68,Lake,Back,71.0,139
+T8,United States of America,Jackson Koivun,-1,Ocean,68,Lake,Back,71.0,139
+T8,England,Charlie Forster,-1,Ocean,66,Lake,Front,73.0,139
+T8,United States of America,William Sides,-1,Ocean,71,Lake,Front,68,139
+T16,United States of America,Andrew Bailey,E,Ocean,72,Lake,Back,68.0,140
+T16,Iceland,Arni Sveinsson,E,Ocean,68,Lake,Front,72.0,140
+T16,South Africa,Christiaan Maas,E,Lake,69,Ocean,Back,71.0,140
+T16,United States of America,Mahanth Chirravuri,E,Ocean,73,Lake,Front,67.0,140
+T16,United States of America,Frankie Harris,E,Lake,72,Ocean,Front,68.0,140
+T16,England,Luke Poulter,E,Ocean,70,Lake,Front,70.0,140
+T16,United States of America,Davis Johnson,E,Lake,68,Ocean,Back,72.0,140
+T23,United States of America,Billy Davis,+1,Ocean,69,Lake,Back,72.0,141
+T23,United States of America,John Daly II,+1,Lake,74,Ocean,Front,67.0,141
+T23,United States of America,Clark Van Gaalen,+1,Ocean,71,Lake,Back,70.0,141
+T23,United States of America,Parker Claxton,+1,Lake,72,Ocean,Back,69.0,141
+T23,United States of America,David Liechty,+1,Lake,72,Ocean,Front,69.0,141
+T23,United States of America,Chase Nevins,+1,Lake,71,Ocean,Front,70.0,141
+T23,United States of America,Tom Fischer,+1,Ocean,71,Lake,Front,70.0,141
+T23,United States of America,Nate Gahman,+1,Ocean,71,Lake,Front,70.0,141
+T23,England,Tyler Weaver,+1,Lake,71,Ocean,Back,70.0,141
+T23,Thailand,Pongsapak Laopakdee,+1,Ocean,70,Lake,Front,71.0,141
+T33,United States of America,Josh Duangmanee,+2,Lake,73,Ocean,Front,69.0,142
+T33,Germany,Wolfgang Glawe,+2,Lake,72,Ocean,Front,70.0,142
+T33,United States of America,William Jennings,+2,Ocean,70,Lake,Back,72.0,142
+T33,United States of America,Cameron Tankersley,+2,Lake,69,Ocean,Front,73.0,142
+T33,Japan,Rintaro Nakano,+2,Lake,75,Ocean,Back,67.0,142
+T33,Scotland,Connor Graham,+2,Lake,72,Ocean,Front,70.0,142
+T33,United States of America,Max Herendeen,+2,Ocean,69,Lake,Front,73.0,142
+T33,United States of America,Andrew Tan,+2,Lake,75,Ocean,Front,67.0,142
+T33,United States of America,Aston Lim,+2,Ocean,71,Lake,Back,71.0,142
+T33,United States of America,Jackson Herrington,+2,Lake,69,Ocean,Front,73.0,142
+T33,United States of America,Cohen Trolio,+2,Lake,72,Ocean,Front,70.0,142
+T33,United States of America,Kolton Crawford,+2,Lake,72,Ocean,Back,70.0,142
+T33,United States of America,Ben James,+2,Ocean,72,Lake,Back,70.0,142
+T33,United States of America,Cooper Claycomb,+2,Ocean,72,Lake,Front,70.0,142
+T33,United States of America,Luke Colton,+2,Lake,70,Ocean,Back,72.0,142
+T48,United States of America,Ryan Voois,+3,Ocean,71,Lake,Back,72.0,143
+T48,United States of America,Emil Riegger,+3,Lake,72,Ocean,Front,71.0,143
+T48,United States of America,Zachary Miller,+3,Ocean,70,Lake,Front,73.0,143
+T48,United States of America,Payne Denman,+3,Lake,71,Ocean,Back,72.0,143
+T48,United States of America,Marek Fleming,+3,Lake,75,Ocean,Back,68.0,143
+T48,United States of America,Caleb Bond,+3,Ocean,75,Lake,Back,68.0,143
+T48,Czechia,Filip Jakubcik,+3,Ocean,74,Lake,Front,69.0,143
+T48,United States of America,Mason Howell,+3,Lake,70,Ocean,Front,73.0,143
+T48,New Zealand,Joshua Bai,+3,Lake,76,Ocean,Back,67.0,143
+T48,United States of America,Pennson Badgett,+3,Ocean,71,Lake,Back,72.0,143
+T48,United States of America,Jacob Modleski,+3,Ocean,71,Lake,Front,72.0,143
+T48,People's Republic Of China,Paul Chang,+3,Lake,77,Ocean,Back,66.0,143
+T48,United States of America,Bowen Mauss,+3,Lake,76,Ocean,Back,67.0,143
+T48,United States of America,Ryan Downes,+3,Lake,68,Ocean,Front,75.0,143
+T48,Germany,Tim Wiedemeyer,+3,Lake,70,Ocean,Back,73.0,143
+T48,United States of America,Brady Siravo,+3,Ocean,71,Lake,Back,72.0,143
+T48,Scotland,Niall Shiels Donegan,+3,Lake,73,Ocean,Back,70.0,143
+T48,United States of America,Jimmy Abdo,+3,Lake,72,Ocean,Back,71.0,143
+T48,United States of America,Travis Woolf,+3,Ocean,70,Lake,Front,73.0,143
+T48,England,Jack Bigham,+3,Ocean,69,Lake,Front,74.0,143
+T68,United States of America,Matthew Kress,+4,Lake,74,Ocean,Front,70.0,144
+T68,United States of America,Ryder Cowan,+4,Ocean,70,Lake,Back,74.0,144
+T68,United States of America,Shaun Cook,+4,Lake,74,Ocean,Back,70.0,144
+T68,United States of America,Michael Lugiano,+4,Lake,71,Ocean,Back,73.0,144
+T68,United States of America,Josiah Hakala,+4,Lake,72,Ocean,Front,72.0,144
+T68,United States of America,Parker Sands,+4,Lake,74,Ocean,Front,70.0,144
+T68,United States of America,Evan Beck,+4,Ocean,71,Lake,Back,73.0,144
+T68,United States of America,Tyler Loree,+4,Ocean,73,Lake,Back,71.0,144
+T68,United States of America,Wheaton Ennis,+4,Lake,72,Ocean,Back,72.0,144
+T68,New Zealand,Zackary Swanwick,+4,Ocean,75,Lake,Front,69.0,144
+T68,United States of America,Greyson Leach,+4,Lake,73,Ocean,Front,71.0,144
+T68,United States of America,Adam Anderson,+4,Ocean,75,Lake,Back,69.0,144
+T68,United States of America,Will Hartman,+4,Lake,71,Ocean,Front,73.0,144
+T68,United States of America,Carlos Astiazaran,+4,Lake,73,Ocean,Front,71.0,144
+T68,United States of America,Josiah Gilbert,+4,Lake,72,Ocean,Back,72.0,144
+T68,United States of America,Michael Riebe,+4,Ocean,72,Lake,Front,72.0,144
+T68,Northern Ireland,Matthew McClean,+4,Lake,74,Ocean,Back,70.0,144
+T68,United States of America,Avinash Iyer,+4,Ocean,71,Lake,Front,73.0,144
+T86,United States of America,Ryan Terry,+5,Lake,73,Ocean,Front,72.0,145
+T86,United States of America,Matt Vogt,+5,Lake,70,Ocean,Back,75.0,145
+T86,United States of America,Luke Potter,+5,Ocean,72,Lake,Back,73.0,145
+T86,United States of America,Adam Friedman,+5,Ocean,71,Lake,Back,74.0,145
+T86,Australia,Declan O'Donovan,+5,Lake,72,Ocean,Front,73.0,145
+T86,United States of America,Trevor Gutschewski,+5,Ocean,73,Lake,Front,72.0,145
+T86,United States of America,Matthew Comegys,+5,Lake,72,Ocean,Back,73.0,145
+T86,United States of America,Robbie Ziegler,+5,Ocean,75,Lake,Front,70.0,145
+T86,United States of America,Stewart Hagestad,+5,Lake,72,Ocean,Back,73.0,145
+T95,United States of America,Garrett Endicott,+6,Ocean,74,Lake,Back,72.0,146
+T95,Canada,Garrett Rank,+6,Ocean,72,Lake,Back,74.0,146
+T95,United States of America,William King,+6,Ocean,71,Lake,Front,75.0,146
+T95,Australia,Coby Carruthers,+6,Ocean,72,Lake,Back,74.0,146
+T95,United States of America,Justin Biwer,+6,Ocean,74,Lake,Back,72.0,146
+T95,United States of America,Hamilton Coleman,+6,Ocean,73,Lake,Back,73.0,146
+T95,United States of America,Matthew Robles,+6,Ocean,74,Lake,Front,72.0,146
+T95,United States of America,Jacob Goode,+6,Lake,73,Ocean,Back,73.0,146
+T95,United States of America,Kade McDonough,+6,Lake,76,Ocean,Back,70.0,146
+T95,England,Oliver Cage,+6,Lake,75,Ocean,Back,71.0,146
+T95,United States of America,Luke Powell,+6,Ocean,73,Lake,Back,73.0,146
+T95,United States of America,Daniel Stringfellow,+6,Lake,72,Ocean,Front,74.0,146
+T95,United States of America,Matthew Troutman,+6,Ocean,71,Lake,Front,75.0,146
+T95,United States of America,Anthony Delisanti,+6,Lake,72,Ocean,Front,74.0,146
+T95,United States of America,Andrew Ramos,+6,Ocean,73,Lake,Front,73.0,146
+T95,United States of America,Eric Doyle,+6,Lake,70,Ocean,Front,76.0,146
+T95,United States of America,Cole Rueck,+6,Lake,75,Ocean,Back,71.0,146
+T95,Australia,Billy Dowling,+6,Ocean,74,Lake,Front,72.0,146
+T95,United States of America,Tyler Mawhinney,+6,Ocean,76,Lake,Front,70.0,146
+T95,United States of America,Bailey Sutter,+6,Lake,74,Ocean,Back,72.0,146
+T115,United States of America,Maxwell Tjoa,+7,Ocean,74,Lake,Back,73.0,147
+T115,United States of America,Tyler Watts,+7,Lake,75,Ocean,Front,72.0,147
+T115,United States of America,Mike Calef,+7,Lake,75,Ocean,Front,72.0,147
+T115,United States of America,Matt Fast,+7,Lake,74,Ocean,Back,73.0,147
+T115,England,Matthew Dodd-Berry,+7,Lake,72,Ocean,Front,75.0,147
+T115,United States of America,Jack Wieler,+7,Lake,75,Ocean,Back,72.0,147
+T115,Canada,Ashton McCulloch,+7,Lake,76,Ocean,Front,71.0,147
+T115,United States of America,Bryce Wheeler,+7,Ocean,73,Lake,Back,74.0,147
+T115,United States of America,Nathan Piatt,+7,Lake,75,Ocean,Back,72.0,147
+T115,United States of America,Zach Kingsland,+7,Ocean,72,Lake,Front,75.0,147
+T115,United States of America,Christian Johnson,+7,Lake,73,Ocean,Back,74.0,147
+T115,United States of America,William McDonald,+7,Lake,72,Ocean,Front,75.0,147
+T115,Vietnam,Anh Minh Nguyen,+7,Ocean,71,Lake,Back,76.0,147
+T115,Scotland,Cameron Adam,+7,Ocean,76,Lake,Back,70,146
+T129,United States of America,Lorenzo Rodriguez,+8,Ocean,72,Lake,Back,76.0,148
+T129,United States of America,Jay Mendell,+8,Ocean,75,Lake,Front,73.0,148
+T129,United States of America,Daniel Suter,+8,Lake,80,Ocean,Back,68.0,148
+T129,United States of America,Cayden Pope,+8,Lake,78,Ocean,Front,70.0,148
+T129,United States of America,Tyson Shelley,+8,Ocean,72,Lake,Front,76.0,148
+T129,United States of America,Lance Simpson,+8,Lake,72,Ocean,Front,76.0,148
+T129,United States of America,Noah Kent,+8,Ocean,74,Lake,Front,74.0,148
+T129,United States of America,Nicholas Prieto,+8,Lake,78,Ocean,Front,70.0,148
+T129,Guatemala,Gabriel Palacios,+8,Lake,75,Ocean,Back,73.0,148
+T129,Japan,Keigo Takehara,+8,Ocean,76,Lake,Back,72.0,148
+T129,United States of America,Baron Szeto,+8,Ocean,71,Lake,Front,77.0,148
+T129,United States of America,Jack Turner,+8,Lake,75,Ocean,Back,73.0,148
+T129,Colombia,Tomas Restrepo,+8,Lake,75,Ocean,Front,73.0,148
+T129,United States of America,Parker Bell,+8,Lake,72,Ocean,Front,76.0,148
+T129,United States of America,Jonathan Griz,+8,Ocean,72,Lake,Front,76.0,148
+T129,United States of America,Philip Minnehan,+8,Lake,70,Ocean,Front,78.0,148
+T146,United States of America,Jack Gilbert,+8,Lake,73,Ocean,Front,76.0,149
+T146,Panama,Omar Tejeira,+9,Lake,78,Ocean,Back,71.0,149
+T146,United States of America,Dax Isbell,+9,Lake,75,Ocean,Back,74.0,149
+T146,United States of America,CJ Winchenbaugh,+9,Ocean,71,Lake,Front,78.0,149
+T146,Guatemala,Alejandro Villavicencio,+9,Ocean,73,Lake,Front,76.0,149
+T146,United States of America,Cooper Schultz,+9,Lake,78,Ocean,Front,71.0,149
+T146,United States of America,Dean Greyserman,+9,Lake,77,Ocean,Front,72.0,149
+T146,United States of America,Zachery Pollo,+9,Lake,72,Ocean,Back,77.0,149
+T146,England,Daniel Hayes,+9,Ocean,76,Lake,Back,73.0,149
+T146,United States of America,Noah Goldman,+9,Lake,77,Ocean,Front,72.0,149
+T146,United States of America,Jaden Huggins,+9,Lake,76,Ocean,Front,73.0,149
+T146,United States of America,Bennett Espenshade,+9,Ocean,74,Lake,Front,75.0,149
+T146,United States of America,Parker Wisdom,+9,Lake,75,Ocean,Back,74.0,149
+T146,Bolivia,Jose Luis Montano,+9,Ocean,79,Lake,Front,70.0,149
+T146,Canada,Cooper Humphreys,+9,Ocean,74,Lake,Back,75.0,149
+T146,Canada,Braxton Kuntz,+9,Lake,73,Ocean,Front,76.0,149
+T146,United States of America,JP Odland,+9,Lake,74,Ocean,Front,75.0,149
+T146,United States of America,Bobby Massa,+9,Ocean,78,Lake,Front,71.0,149
+T146,United States of America,Drue Nicholas,+9,Ocean,75,Lake,Back,74.0,149
+T146,United States of America,Aiden Krafft,+9,Ocean,76,Lake,Back,73.0,149
+T146,United States of America,Nathan O'Neal,+9,Ocean,71,Lake,Back,78.0,149
+T146,United States of America,Preston Hage,+9,Lake,74,Ocean,Back,75.0,149
+T146,United States of America,Cole Imig,+9,Ocean,74,Lake,Front,75.0,149
+T146,United States of America,Owen Sawyer,+9,Ocean,72,Lake,Front,77.0,149
+T146,United States of America,Ronin Banerjee,+9,Ocean,76,Lake,Back,73.0,149
+T146,United States of America,Kihei Akina,+9,Lake,73,Ocean,Back,76.0,149
+T146,Singapore,Hiroshi Tai,+9,Ocean,73,Lake,Front,76.0,149
+T146,Canada,Jager Pain,+9,Ocean,70,Lake,Back,79.0,149
+T146,United States of America,Connor Cassano,+9,Lake,78,Ocean,Front,71.0,149
+T146,United States of America,Winburne Hughes,+9,Lake,79,Ocean,Front,70.0,149
+T146,United States of America,Liam Maclauchlan,+9,Ocean,74,Lake,Back,75.0,149
+T146,United States of America,Gaven Lane,+9,Lake,78,Ocean,Front,71.0,149
+T146,United States of America,Gray Mitchum,+9,Ocean,72,Lake,Front,76.0,149
+T146,United States of America,Wells Williams,+9,Ocean,77,Lake,Back,73.0,149
+T179,Thailand,Ratchanon TK Chantananuwat,+10,Lake,77,Ocean,Back,73.0,150
+T179,United States of America,Zach Foushee,+10,Lake,72,Ocean,Back,78.0,150
+T179,Brazil,Andrey Borges,+10,Lake,77,Ocean,Back,73.0,150
+T179,United States of America,Jackson Spires,+10,Ocean,77,Lake,Front,73.0,150
+T179,United States of America,Kurtis Rodriguez,+10,Ocean,76,Lake,Front,74.0,150
+T179,United States of America,Colin Summers,+10,Ocean,75,Lake,Front,75.0,150
+T179,United States of America,Willy Walsh,+10,Lake,75,Ocean,Front,75.0,150
+T179,United States of America,Collin Hodgkinson,+10,Lake,73,Ocean,Back,77.0,150
+T179,United States of America,Bo Blanchard,+10,Lake,72,Ocean,Back,78.0,150
+T179,United States of America,Grady Brame Jr.,+10,Ocean,75,Lake,Front,75.0,150
+T179,United States of America,Jeg Coughlin III,+10,Lake,77,Ocean,Front,73.0,150
+T179,United States of America,Bruce Murphy,+10,Ocean,74,Lake,Front,76.0,150
+T179,Germany,Peer Wernicke,+10,Lake,77,Ocean,Front,73.0,150
+T179,United States of America,Walker Gantt,+10,Ocean,75,Lake,Back,75.0,150
+T193,United States of America,Zach Gomez,+11,Lake,77,Ocean,Front,74.0,151
+T193,United States of America,Dean Muratore,+11,Ocean,74,Lake,Front,77.0,151
+T193,United States of America,Matthew Diehl,+11,Ocean,74,Lake,Back,77.0,151
+T193,United States of America,Kevin Hollomon,+11,Lake,79,Ocean,Front,72.0,151
+T193,Canada,Wyatt Brook,+11,Lake,78,Ocean,Back,73.0,151
+T193,United States of America,Trevor Lewis,+11,Lake,75,Ocean,Back,76.0,151
+T193,United States of America,Pavel Tsar,+11,Ocean,75,Lake,Front,76.0,151
+T193,South Africa,Malan Potgieter,+11,Lake,82,Ocean,Front,69.0,151
+T193,United States of America,Vince Sigl,+11,Ocean,73,Lake,Back,78.0,151
+T193,United States of America,Jack Dukeminier,+11,Lake,77,Ocean,Front,74.0,151
+T193,United States of America,Evan Barbin,+11,Ocean,75,Lake,Back,76.0,151
+T193,United States of America,Mesa Falleur,+11,Ocean,70,Lake,Back,81.0,151
+T193,United States of America,Rocco Salvitti,+11,Ocean,71,Lake,Front,80.0,151
+T193,United States of America,Rob O'Regan,+11,Ocean,74,Lake,Back,77.0,151
+T193,United States of America,Bennett McNabb,+11,Lake,78,Ocean,Front,73.0,151
+T193,People's Republic Of China,Xihuan Chang,+11,Ocean,75,Lake,Back,76.0,151
+T193,United States of America,Jaden Dumdumaya,+11,Lake,72,Ocean,Front,79.0,151
+T193,United States of America,Kobe Valociek,+11,Ocean,71,Lake,Front,80.0,151
+T193,United States of America,Hunter Swanson,+11,Lake,75,Ocean,Front,76.0,151
+T193,United States of America,Jackson Saroney,+11,Ocean,78,Lake,Front,73.0,151
+T193,United States of America,Drew Kittleson,+11,Ocean,77,Lake,Front,73.0,151
+T214,United States of America,Tommy Hurst,+12,Ocean,79,Lake,Back,73.0,152
+T214,United States of America,Ryan Abuan,+12,Lake,78,Ocean,Back,74.0,152
+T214,United States of America,Grant Doggett,+12,Lake,77,Ocean,Front,75.0,152
+T214,United States of America,Rylan Johnson,+12,Lake,81,Ocean,Back,71.0,152
+T214,United States of America,Michael La Sasso,+12,Lake,78,Ocean,Back,74.0,152
+T214,United States of America,Michael Crocker,+12,Ocean,78,Lake,Front,74.0,152
+T214,United States of America,Chad Niezing,+12,Ocean,76,Lake,Back,76.0,152
+T214,United States of America,AJ Fitzgerald,+12,Ocean,79,Lake,Front,73.0,152
+T214,Netherlands,Benjamin Reuter,+12,Lake,73,Ocean,Front,79.0,152
+T214,United States of America,Ethan Fang,+12,Ocean,73,Lake,Back,79.0,152
+T214,United States of America,Cody Massa,+12,Ocean,76,Lake,Back,76.0,152
+T214,United States of America,Ethan Evans,+12,Ocean,74,Lake,Back,78.0,152
+T214,United States of America,Connor Doyal,+12,Lake,73,Ocean,Back,79.0,152
+T214,United States of America,William Ma,+12,Ocean,75,Lake,Front,77.0,152
+T214,United States of America,Nathaniel Frink,+12,Lake,78,Ocean,Front,74.0,152
+T214,United States of America,Brad Nurski,+12,Lake,76,Ocean,Back,76.0,152
+T214,Wales,Mike Hearne,+12,Ocean,80,Lake,Back,73.0,153
+T231,United States of America,Carson Brewer,+13,Lake,76,Ocean,Back,77.0,153
+T231,United States of America,Aaron Sorkin,+13,Ocean,77,Lake,Back,76.0,153
+T231,United States of America,Thomas Herholtz,+13,Lake,77,Ocean,Front,76.0,153
+T231,France,Hugo Le Goff,+13,Ocean,79,Lake,Back,74.0,153
+T231,United States of America,Joe Wilson IV,+13,Ocean,78,Lake,Back,75.0,153
+T231,United States of America,Logan Zurn,+13,Lake,78,Ocean,Front,75.0,153
+T231,United States of America,Ryan Wilkins,+13,Lake,78,Ocean,Back,75.0,153
+T231,United States of America,Cooper Paull,+13,Ocean,76,Lake,Front,77.0,153
+T231,United States of America,Hayes Brown,+13,Lake,78,Ocean,Back,75.0,153
+T231,Wales,Tomi Bowen,+13,Lake,80,Ocean,Front,73.0,153
+T231,United States of America,Sam Jackson,+13,Lake,82,Ocean,Back,71.0,153
+T231,United States of America,Coy Dobson,+13,Ocean,78,Lake,Back,75.0,153
+T231,United States of America,Kaleb Wilson,+13,Ocean,75,Lake,Front,78.0,153
+T231,United States of America,Trent Virden,+13,Ocean,73,Lake,Front,80.0,153
+T231,United States of America,Luke Sample,+13,Lake,75,Ocean,Back,78.0,153
+T231,United States of America,Jake Olson,+13,Ocean,75,Lake,Back,78.0,153
+T231,United States of America,Nicholas Gross,+13,Lake,79,Ocean,Front,74.0,153
+T231,United States of America,TJ Barger,+13,Lake,76,Ocean,Back,77.0,153
+T231,United States of America,Harris Barth,+13,Ocean,76,Lake,Front,76.0,153
+T250,United States of America,Andy Sajevic,+14,Lake,79,Ocean,Back,75.0,154
+T250,United States of America,Connor Williams,+14,Ocean,69,Lake,Back,85.0,154
+T250,Australia,Arrow Aarav Shah,+14,Ocean,78,Lake,Front,76.0,154
+T250,United States of America,Alex Holder,+14,Ocean,77,Lake,Back,77.0,154
+T250,United States of America,Jordan Less,+14,Ocean,76,Lake,Back,78.0,154
+T250,United States of America,Brody Leid,+14,Ocean,74,Lake,Back,80.0,154
+T250,United States of America,Smith Summerlin,+14,Lake,75,Ocean,Back,79.0,154
+T250,United States of America,Phillip Kench,+14,Lake,79,Ocean,Back,75.0,154
+T250,United States of America,Nicholas Turowski,+14,Ocean,73,Lake,Front,81.0,154
+T250,United States of America,Jake Moffitt,+14,Ocean,78,Lake,Back,76.0,154
+T250,United States of America,Ron Whittaker,+14,Lake,79,Ocean,Front,75.0,154
+T261,United States of America,Warren Thomis,+15,Lake,80,Ocean,Front,75.0,155
+T261,United States of America,Matthew Armstrong,+15,Lake,79,Ocean,Back,76.0,155
+T261,United States of America,Bryan Lee,+15,Lake,76,Ocean,Back,79.0,155
+T261,United States of America,Eli Spaulding,+15,Lake,81,Ocean,Back,74.0,155
+T261,Spain,Alvaro Muller Baumgart,+15,Ocean,79,Lake,Front,76.0,155
+T261,United States of America,Todd White,+15,Lake,81,Ocean,Front,74.0,155
+T261,United States of America,Nate Stevens,+15,Ocean,80,Lake,Front,75.0,155
+T261,United States of America,Victor Caliguri,+15,Lake,74,Ocean,Back,81.0,155
+T261,United States of America,Toby Wilt,+15,Lake,78,Ocean,Front,77.0,155
+T261,United States of America,Matt Parziale,+15,Lake,76,Ocean,Back,79.0,155
+T261,United States of America,Pierce Grieve,+15,Ocean,78,Lake,Back,75.0,153
+T272,United States of America,Ben Cors,+16,Lake,83,Ocean,Back,73.0,156
+T272,United States of America,Keenan Royalty,+16,Ocean,77,Lake,Front,79.0,156
+T272,Hong Kong China,Luke Brandler,+16,Ocean,82,Lake,Back,74.0,156
+T272,United States of America,Tim Hegarty,+16,Lake,78,Ocean,Back,78.0,156
+T272,United States of America,Daniel Sullivan,+16,Ocean,78,Lake,Back,78.0,156
+T272,United States of America,Noah McWilliams,+16,Ocean,77,Lake,Front,79.0,156
+T278,United States of America,Payton Taylor,+17,Ocean,79,Lake,Front,78.0,157
+T278,United States of America,Jacob Sosa,+17,Lake,78,Ocean,Front,79.0,157
+T278,United States of America,Jaxon Bandelier,+17,Ocean,79,Lake,Back,78.0,157
+T278,United States of America,Sebastian Kasun,+17,Lake,81,Ocean,Front,76.0,157
+T278,Canada,Josh Ince,+17,Lake,79,Ocean,Back,78.0,157
+T278,United States of America,Parker Paxton,+17,Ocean,80,Lake,Back,77.0,157
+T278,Estonia,Richard Teder,+17,Ocean,73,Lake,Back,84.0,157
+T278,United States of America,Kevin Gillick,+17,Ocean,75,Lake,Back,82.0,157
+T278,United States of America,Peter Kim,+17,Lake,75,Ocean,Front,82.0,157
+T278,United States of America,Greg Sanders,+17,Ocean,80,Lake,Back,77.0,157
+T278,United States of America,Barnes Blake,+17,Lake,77,Ocean,Front,80.0,157
+T289,United States of America,Ty Adkins,+18,Ocean,82,Lake,Back,76.0,158
+T289,Puerto Rico,Robi Calvesbert,+18,Ocean,80,Lake,Front,78.0,158
+T289,United States of America,Fred Allen Meyer,+18,Lake,79,Ocean,Front,79.0,158
+T289,United States of America,Ben Gregg,+18,Ocean,81,Lake,Front,77.0,158
+T289,United States of America,Hunter Smith,+18,Ocean,82,Lake,Back,76.0,158
+T289,United States of America,Owen Elliott,+18,Ocean,79,Lake,Front,79.0,158
+T295,United States of America,Matt Mitchell,+19,Ocean,80,Lake,Front,79.0,159
+T295,United States of America,Connor McNeely,+19,Lake,77,Ocean,Back,82.0,159
+T295,United States of America,Michael Winslow,+19,Lake,83,Ocean,Front,76.0,159
+T295,United States of America,Kevin Lydon,+19,Ocean,84,Lake,Front,75.0,159
+T295,United States of America,Peter Myers,+19,Lake,79,Ocean,Front,80.0,159
+T300,United States of America,Michael Walsh,+20,Ocean,78,Lake,Back,82.0,160
+T300,United States of America,Ben Haggin,+20,Ocean,81,Lake,Front,79.0,160
+T300,Mexico,Alejandro Fierro,+20,Ocean,83,Lake,Back,77.0,160
+T300,Wales,Ieuan Jones,+20,Ocean,75,Lake,Back,85.0,160
+T300,United States of America,Carson Skarperud,+20,Ocean,81,Lake,Back,80.0,161
+305,United States of America,Luke Metzger,+21,Lake,84,Ocean,Front,77.0,161
+306,United States of America,Jake Ackerman,+22,Ocean,81,Lake,Back,81.0,162
+307,United States of America,Jake Bauer,+23,Lake,78,Ocean,Front,85.0,163
+T308,United States of America,Brian Blalock,+24,Ocean,81,Lake,Front,83.0,164
+T308,United States of America,Jacob Kutner,+24,Lake,80,Ocean,Back,84.0,164
+310,United States of America,Alex Zurat,+25,Lake,81,Ocean,Back,84.0,165
+311,United States of America,Luke Dugger,+26,Ocean,82,Lake,Front,84.0,166
+312,United States of America,Chandler Mulkey,+31,Lake,87,Ocean,Back,84.0,171
