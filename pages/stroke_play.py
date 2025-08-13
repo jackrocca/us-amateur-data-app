@@ -804,7 +804,6 @@ with player_tab1:
 
     with col2:
             # R2 Improvers vs Worseners Analysis
-            st.subheader("Round 2 Performance Changes")
             
             # Calculate improvements/worsening from R1 to R2
             enhanced['R1_TO_R2_CHANGE'] = enhanced['ROUND_2_SCORE'] - enhanced['ROUND_1_SCORE']
@@ -1065,10 +1064,9 @@ with player_tab4:
 
     st.caption(f"Displaying top {num_players} players by position. Use slider above to adjust number of players shown.")
     
-    st.markdown("---")
     
     # Individual Player Analysis
-    st.subheader("Individual Player Analysis")
+    st.markdown("#### Individual Player Analysis")
     
     # Sort players by position (leaders first, handle ties by POS_RANK)
     player_standings = enhanced.sort_values(['POS_RANK', 'PLAYER'])[['PLAYER', 'POS']].copy()
@@ -1091,10 +1089,9 @@ with player_tab4:
     with col4:
         st.metric("Country", p['CTRY'])
     
-    st.markdown("---")
     
     # Scoring breakdown
-    st.subheader("Round Scoring Breakdown")
+    st.markdown("#### Round Scoring Breakdown")
     r1_counts = [p["R1_EAGLES"], p["R1_BIRDIES"], p["R1_PARS"], p["R1_BOGEYS"], p["R1_DOUBLES_PLUS"]]
     r2_counts = [p["R2_EAGLES"], p["R2_BIRDIES"], p["R2_PARS"], p["R2_BOGEYS"], p["R2_DOUBLES_PLUS"]]
     labels = ["Eagles", "Birdies", "Pars", "Bogeys", "Doubles+"]
@@ -1104,7 +1101,7 @@ with player_tab4:
     st.caption("Count of scoring outcomes by round for the selected player.")
 
     # Hole-by-hole line vs par for each round
-    st.subheader("Hole-by-Hole Performance")
+    st.markdown("#### Hole-by-Hole Performance")
     ph = per_hole[per_hole["PLAYER"] == selected_player]
     for rnd in [1, 2]:
         row = ph[ph["ROUND"] == rnd]
@@ -1127,27 +1124,19 @@ with player_tab4:
 
 
 # Advanced Analytics Section
+st.divider()
 st.markdown('<h2 class="section-header">Advanced Analytics</h2>', unsafe_allow_html=True)
 
-# Interactive filters
-col1, col2 = st.columns(2)
-
-with col1:
-    score_range = st.slider(
-        "Total Score Range",
-        min_value=int(enhanced["TOTAL_SCORE"].min()),
-        max_value=int(enhanced["TOTAL_SCORE"].max()),
-        value=(int(enhanced["TOTAL_SCORE"].min()), int(enhanced["TOTAL_SCORE"].max())),
+score_range = st.slider(
+    "Total Score Range",
+    min_value=int(enhanced["TOTAL_SCORE"].min()),
+    max_value=int(enhanced["TOTAL_SCORE"].max()),
+    value=(int(enhanced["TOTAL_SCORE"].min()), int(enhanced["TOTAL_SCORE"].max())),
     )
-
-with col2:
-    round2_start = st.selectbox("Round 2 Start", options=["All", "Front", "Back"])
 
 # Apply filters
 filtered_df = enhanced.copy()
 filtered_df = filtered_df[(filtered_df["TOTAL_SCORE"] >= score_range[0]) & (filtered_df["TOTAL_SCORE"] <= score_range[1])]
-if round2_start != "All":
-    filtered_df = filtered_df[filtered_df["ROUND_2_START"] == round2_start]
 
 # Momentum analysis
 col1, col2 = st.columns(2)
