@@ -54,7 +54,7 @@
 - Acceptance criteria:
   - Player Analysis focuses on performance; country chart is available but deemphasized.
 
-## PR 07 — Player Analysis: replace gauge with simple, robust “R2 improvers vs worseners” chart [ ]
+## PR 07 — Player Analysis: replace gauge with simple, robust "R2 improvers vs worseners" chart [x]
 
 - Rationale: Current gauge/HTML is buggy and overkill.
 - Changes:
@@ -63,7 +63,7 @@
 - Acceptance criteria:
   - No custom HTML/gauge; chart renders consistently and communicates counts/percents.
 
-## PR 08 — Player Analysis: replace “Most Consistent Players” with higher‑value tables [ ]
+## PR 08 — Player Analysis: replace "Most Consistent Players" with higher‑value tables [x]
 
 - Rationale: Consistency can highlight two bad rounds; we want performance.
 - Changes:
@@ -71,7 +71,7 @@
 - Acceptance criteria:
   - New tables render; columns include player, scores, and deltas; content is clearly performance‑oriented.
 
-## PR 09 — Made‑the‑Cut tab: rework visuals to focus on cut dynamics [ ]
+## PR 09 — Made‑the‑Cut tab: rework visuals to focus on cut dynamics [x]
 
 - Rationale: Current content feels thin.
 - Changes:
@@ -81,7 +81,7 @@
 - Acceptance criteria:
   - Visuals directly communicate cut distribution and near‑misses; fewer low‑signal tables.
 
-## PR 10 — Remove “Impact of Starting Nine (Round 2)” section [ ]
+## PR 10 — Remove "Impact of Starting Nine (Round 2)" section [x]
 
 - Rationale: Chart is confusing/low value.
 - Changes:
@@ -89,7 +89,7 @@
 - Acceptance criteria:
   - Player Analysis renders without that section; no references/errors.
 
-## PR 11 — Filters: remove country filter; keep score range and Round‑2 start
+## PR 11 — Filters: remove country filter; keep score range and Round‑2 start [x]
 
 - Rationale: Country adds little for US Amateur; R2 start may remain as a filter.
 - Changes:
@@ -97,7 +97,7 @@
 - Acceptance criteria:
   - Filters work without country; page performance unaffected.
 
-## PR 12 — R1 vs R2 scatter: show legend counts for made‑cut groups [ ]
+## PR 12 — R1 vs R2 scatter: show legend counts for made‑cut groups [x]
 
 - Rationale: Quick quantification of cohort sizes.
 - Changes:
@@ -106,7 +106,7 @@
 - Acceptance criteria:
   - Legend or chart text clearly shows counts of made/missed cut.
 
-## PR 13 — Best nine‑hole performance: show by course+side (Lake F/B, Ocean F/B)
+## PR 13 — Best nine‑hole performance: show by course+side (Lake F/B, Ocean F/B) [x]
 
 - Rationale: “By round” is harder to digest; course+side is more intuitive.
 - Changes:
@@ -115,7 +115,7 @@
 - Acceptance criteria:
   - Chart shows exactly four categories; totals match players with valid nine‑hole data.
 
-## PR 14 — Player Spotlight improvements [ ]
+## PR 14 — Player Spotlight improvements [x]
 
 - Rationale: Better UX and clarity.
 - Changes:
@@ -124,7 +124,7 @@
 - Acceptance criteria:
   - Selector starts at the leader; vs‑par charts have integer y‑ticks only.
 
-## PR 15 — Titles/captions polish across charts [ ]
+## PR 15 — Titles/captions polish across charts [x]
 
 - Rationale: Improve clarity and reduce ambiguity.
 - Changes:
